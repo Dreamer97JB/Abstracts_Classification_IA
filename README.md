@@ -14,6 +14,7 @@ El repositorio original es `notebook-first`: [`AbstractsV2.ipynb`](./AbstractsV2
 Para una guía completa de diagnóstico y refactor:
 
 - ver [`docs/guia_refactor_clasificador.md`](./docs/guia_refactor_clasificador.md)
+- ver [`docs/guia_amd_wsl_rocm.md`](./docs/guia_amd_wsl_rocm.md)
 
 ## Inicio rápido
 

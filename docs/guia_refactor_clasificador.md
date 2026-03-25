@@ -134,12 +134,21 @@ Las nuevas categorias no deberian entrenarse con seeds sinteticas repetitivas co
 
 Mi recomendacion:
 
+- asumir que `seed_labeled.csv` y `seed_generated.csv` son artefactos auxiliares de arranque, no gold data
 - usar seeds manuales curadas por categoria
 - meta minima inicial: `40-80` ejemplos reales por categoria
 - separar claramente:
   - semillas reales confirmadas
   - semillas sinteticas auxiliares
   - ejemplos dudosos para revision
+
+Dado lo que comentas del cliente, el flujo futuro debe estar orientado a recibir:
+
+- categorias oficiales
+- ejemplos etiquetados por categoria
+- criterios de inclusion/exclusion por clase
+
+En cuanto eso llegue, conviene congelar los CSV actuales como historicos y abrir una nueva iteracion de entrenamiento sobre esas etiquetas reales.
 
 ### Fase C. Baseline fuerte y simple
 
@@ -194,9 +203,9 @@ Recomendacion:
 
 ### Recomendacion principal
 
-- Python `3.11`
-- entorno virtual local `.venv`
-- CUDA `12.1` si se quiere reproducir la idea del notebook local
+- para trabajo CPU rapido en Windows: Python `3.11` con `.venv`
+- para entrenamiento serio con tu `AMD Radeon RX 9070`: `WSL2 + Ubuntu 24.04 + ROCm`
+- entorno principal de entrenamiento en WSL: `~/.venvs/abstracts-rocm`
 
 ### Por que no recomiendo arrancar por defecto con Python 3.14
 
@@ -207,6 +216,20 @@ Aunque parte del stack moderno ya soporta 3.14, la ruta mas segura para este pro
 - quieres estabilidad, no solo novedad
 
 Eso es una inferencia practica basada en el notebook existente y en metadatos actuales de paquetes.
+
+### Nota importante para tu equipo actual
+
+Ya quedo validado que en WSL:
+
+- `rocminfo` detecta la `AMD Radeon RX 9070`
+- `torch.cuda.is_available()` da `True`
+- el kernel de Jupyter `abstracts-rocm` ya esta registrado
+
+Entonces, para esta nueva etapa, la recomendacion cambia de forma concreta:
+
+- notebooks exploratorios: puedes seguir usandolos
+- entrenamiento y pruebas serias: hazlas desde WSL
+- Windows queda como entorno auxiliar, no como entorno principal de GPU
 
 ## 8. Plan de trabajo recomendado
 
@@ -263,4 +286,3 @@ Mi recomendacion concreta es esta:
 - Si necesitas explicabilidad para entregar al cliente
 
 Sin esas respuestas igual podemos avanzar en la infraestructura, que es justo lo que se deja preparado en este repo.
-

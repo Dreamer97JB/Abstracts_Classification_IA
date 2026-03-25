@@ -1,0 +1,31 @@
+# AMD Radeon WSL/ROCm environment validated on 2026-03-24
+# Python 3.12 is required by the current AMD WSL PyTorch guidance.
+
+numpy==1.26.4
+
+https://repo.radeon.com/rocm/manylinux/rocm-rel-7.2/torch-2.9.1%2Brocm7.2.0.lw.git7e1940d4-cp312-cp312-linux_x86_64.whl
+https://repo.radeon.com/rocm/manylinux/rocm-rel-7.2/torchvision-0.24.0%2Brocm7.2.0.gitb919bd0c-cp312-cp312-linux_x86_64.whl
+https://repo.radeon.com/rocm/manylinux/rocm-rel-7.2/torchaudio-2.9.0%2Brocm7.2.0.gite3c6ee2b-cp312-cp312-linux_x86_64.whl
+https://repo.radeon.com/rocm/manylinux/rocm-rel-7.2/triton-3.5.1%2Brocm7.2.0.gita272dfa8-cp312-cp312-linux_x86_64.whl
+
+pandas==2.2.3
+openpyxl==3.1.5
+scikit-learn==1.6.1
+nltk==3.9.4
+pyyaml==6.0.3
+matplotlib==3.10.8
+seaborn==0.13.2
+plotly==6.6.0
+jupyterlab==4.5.6
+ipykernel==6.31.0
+transformers==4.51.3
+datasets==3.6.0
+accelerate==1.13.0
+evaluate==0.4.6
+sentence-transformers==4.1.0
+setfit==1.1.3
+bertopic==0.17.4
+umap-learn==0.5.11
+hdbscan==0.8.41
+safetensors==0.5.3
+huggingface_hub==0.36.2
