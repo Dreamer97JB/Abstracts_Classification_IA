@@ -1,0 +1,41 @@
+text,label_text,label
+"Empirical observations are taken to reveal the mind‑independent structure of a world that exists exactly as science describes it, whether or not humans perceive it.",Realism,0
+"The article argues for the causal efficacy of unobservable entities like genes and quarks, insisting that such entities possess objective reality.",Realism,0
+"By combining spectroscopy and cosmological models, the study assumes that theoretical terms such as ‘dark matter’ faithfully refer to real components of the universe.",Realism,0
+"This paper defends the claim that well‑confirmed scientific theories are approximately true, and therefore reliably track the deeper fabric of nature.",Realism,0
+"The success of vaccination programs is interpreted as evidence that pathogens and immune responses are objective features of the biosphere, not social constructs.",Realism,0
+"Geological strata are treated as records of actual past events, reinforcing the realist principle that the earth’s history is independent of present observation.",Realism,0
+"Quantum field theory is taken to describe entities that populate spacetime even when no measurement is performed, supporting ontological realism.",Realism,0
+"The model of plate tectonics is defended as literally true about physical plates and mantle convection rather than a mere calculational device.",Realism,0
+"Climate simulations are argued to succeed because they mirror real causal mechanisms in the atmosphere and oceans.",Realism,0
+"The research maintains that the periodic table reflects genuine natural kinds, revealing the objective architecture of matter.",Realism,0
+"Knowledge is portrayed as a product of social negotiation; facts emerge only after communities stabilise shared interpretive frameworks.",Constructivism,1
+"The study tracks how laboratory conventions actively construct what counts as ‘data’, illustrating that scientific objects depend on consensus practices.",Constructivism,1
+"Medical diagnoses are analysed as interactive achievements between doctors and patients, showing illness categories are socially produced realities.",Constructivism,1
+"Historians reconstruct how the metric system became authoritative, arguing that standards gain legitimacy through institutional power, not inherent truth.",Constructivism,1
+"The paper demonstrates that risk assessments in engineering rely on culturally embedded value judgements rather than purely objective probabilities.",Constructivism,1
+"Through ethnography of AI teams, the work shows algorithmic fairness is defined by context‑specific negotiations among stakeholders.",Constructivism,1
+"Taxonomic boundaries in biology are described as contingent results of disciplinary interests and funding priorities, not reflections of nature’s joints.",Constructivism,1
+"The authors argue that economic models shape markets by guiding behaviour, illustrating reflexive construction of the phenomena they purport to describe.",Constructivism,1
+"Satellite images become evidence only after experts agree on colour palettes and annotation rules, underscoring the constructive role of visual conventions.",Constructivism,1
+"The concept of ‘sustainability’ is traced to UN policy debates, evidencing that its meaning is sustained by rhetorical alignment rather than fixed reference.",Constructivism,1
+"The paper contends that truth claims cannot transcend cultural perspectives; what counts as evidence varies irreducibly across epistemic systems.",Relativism,2
+"Competing medical traditions are shown to employ distinct criteria of legitimacy, supporting the thesis that justification is relative to local norms.",Relativism,2
+"Anthropological cases reveal that notions of personhood differ so radically that no universal moral truths can be maintained.",Relativism,2
+"The study of historiography argues that rival narratives are each valid within their own interpretive frameworks, without objective arbitration.",Relativism,2
+"Logical pluralism is advanced, claiming that what counts as a valid inference depends on the language game one inhabits.",Relativism,2
+"Debates over risk thresholds in environmental policy illustrate that rational choice is contingent upon divergent community standards.",Relativism,2
+"The authors hold that scientific rationality is itself a culture‑bound ideal, undermining appeals to a singular method.",Relativism,2
+"Data from cross‑cultural psychology indicate that perceptions of colour categories vary in ways that preclude a universal account.",Relativism,2
+"Quantum interpretations are treated as incommensurable world‑views, each internally coherent yet mutually untranslatable.",Relativism,2
+"The paper defends standpoint epistemology, arguing that social position unavoidably conditions what can be known.",Relativism,2
+"The study evaluates theories by the practical consequences of adopting them, concluding that hypotheses are true only if they ‘cash out’ in successful action.",Pragmatism,3
+"Scientific concepts like ‘gene’ are appraised as intellectual tools; their worth lies in predictive and technological success, not in mirroring reality.",Pragmatism,3
+"Urban‑planning models are judged by how well they guide policy decisions, exemplifying the pragmatic maxim that meaning equals use.",Pragmatism,3
+"Truth is defined as the end‑of‑inquiry settlement of beliefs within an expert community pursuing workable solutions.",Pragmatism,3
+"The authors re‑frame ethics as experimental: moral principles are hypotheses to be tested through their experiential outcomes.",Pragmatism,3
+"Epistemic warrant is linked to the adaptability of beliefs amid changing evidence, stressing fallibilism and continual revision.",Pragmatism,3
+"In educational research, concepts are retained when they enhance learning practices, aligning with Dewey’s instrumentalism.",Pragmatism,3
+"The paper shows that competing statistical methods should be chosen by their success in informing effective interventions, not abstract optimality.",Pragmatism,3
+"Sustainability indicators are evaluated by how well they motivate concrete environmental improvements, privileging practicality over metaphysics.",Pragmatism,3
+"A linguistic analysis argues that meanings evolve through communal problem‑solving, embedding semantics in patterns of collective action.",Pragmatism,3
