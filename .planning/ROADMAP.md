@@ -2,7 +2,7 @@
 
 ## Overview
 
-This milestone turns an end-to-end notebook proof of concept into a reproducible classifier pipeline. The work starts by establishing stable run contracts and project structure, then formalizes data and label handling, then adds repeatable training, evaluation, inference, and optional analysis modules in a sequence that reduces ambiguity and keeps the main classifier path primary.
+This milestone turns the newly delivered client corpora, labeled subsets, and Arbor typology into a canonical classification pipeline. The work begins by locking the source-of-truth taxonomy and corpus contracts, then harmonizes legacy labels, then builds a baseline theory classifier, then adds methodology and theme outputs, and finally produces full-corpus inference plus client-facing analytical deliverables.
 
 ## Phases
 
@@ -10,94 +10,95 @@ This milestone turns an end-to-end notebook proof of concept into a reproducible
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Project Skeleton and Run Contracts** - Establish reusable package structure, scripts, and environment entrypoints.
-- [ ] **Phase 2: Data and Label Governance** - Normalize source data and validate label inputs before any training flow runs.
-- [ ] **Phase 3: Baseline and Supervised Training Paths** - Implement reproducible baseline and supervised-ready training entrypoints with artifact metadata.
-- [ ] **Phase 4: Evaluation and Batch Inference** - Generate metrics bundles and batch predictions with explicit run traceability.
-- [ ] **Phase 5: Optional Analysis Modules and Notebook Slimming** - Separate topic/methodology analysis from the main classifier pipeline and keep notebooks exploratory only.
+- [ ] **Phase 1: Canonical Taxonomy and Corpus Contracts** - Establish script entrypoints, source manifests, overlap rules, and the canonical theory taxonomy.
+- [ ] **Phase 2: Label Harmonization and Reviewed Gold Set Assembly** - Reconcile Seed and `Muestras`, define methodology labels, and produce governed training/evaluation tables.
+- [ ] **Phase 3: Baseline Theory Classifier** - Implement the first canonical theory classification path with explicit benchmarks and metrics.
+- [ ] **Phase 4: Methodology and Theme Pipeline** - Add methodology classification and optional theme outputs without polluting the theory contract.
+- [ ] **Phase 5: Full-Corpus Inference and Client Deliverables** - Run inference over the selected corpora and generate review, correlation, and delivery-ready outputs.
 
 ## Phase Details
 
-### Phase 1: Project Skeleton and Run Contracts
-**Goal**: Establish the project structure, command surface, and environment entrypoints that replace notebook-only execution as the operational source of truth.
+### Phase 1: Canonical Taxonomy and Corpus Contracts
+**Goal**: Lock the semantic source of truth and the dataset contracts before any training work starts, while also establishing the script surface that replaces notebook-only execution.
 **Depends on**: Nothing (first phase)
-**Requirements**: [OPS-01, ENV-01]
+**Requirements**: [OPS-01, OPS-02, CORP-01, CORP-02, TAXO-01]
 **Success Criteria** (what must be TRUE):
-  1. Analyst can identify and run named project entrypoints for audit, prepare, train, evaluate, and predict.
-  2. The supported WSL ROCm bootstrap and verification path is documented and runnable from the repo.
-  3. The repo contains a package-oriented structure that future phases can extend without reintroducing notebook coupling.
-**Plans**: 2 plans
-
-Plans:
-- [ ] 01-01: Create package skeleton, config surface, and script entrypoints
-- [ ] 01-02: Align environment docs and command conventions with the new run contracts
-
-### Phase 2: Data and Label Governance
-**Goal**: Make raw, interim, and processed data preparation repeatable while enforcing label and schema validation before training.
-**Depends on**: Phase 1
-**Requirements**: [DATA-01, DATA-02, LABL-01, LABL-02]
-**Success Criteria** (what must be TRUE):
-  1. Analyst can transform the source spreadsheet into normalized processed artifacts via scripts, not notebook cells.
-  2. Analyst can run validation against incoming labeled examples and receive actionable failures for duplicates, missing text, and schema issues.
-  3. Taxonomy and split settings live in files that can be changed without editing training code.
+  1. Analyst can identify and run named project entrypoints for audit, prepare, train, evaluate, predict, and analyze.
+  2. Google, Scopus, Seed, and `Muestras` are represented through explicit source manifests with lineage fields and overlap rules.
+  3. The repo contains a canonical theory taxonomy config aligned to the Arbor article rather than spreadsheet shorthand alone.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Implement dataset ingestion and normalization flow
-- [ ] 02-02: Implement label schema and validation utilities
-- [ ] 02-03: Persist processed datasets and manifests for downstream phases
+- [ ] 01-01: Create package skeleton, config surface, and script entrypoints for the new classification workflow
+- [ ] 01-02: Implement source manifests and overlap audit for Google, Scopus, Seed, and `Muestras`
+- [ ] 01-03: Define canonical theory taxonomy config from the Arbor article and inventory legacy label aliases
 
-### Phase 3: Baseline and Supervised Training Paths
-**Goal**: Introduce reproducible training entrypoints for baseline and supervised classifier paths with saved config and artifact metadata.
+### Phase 2: Label Harmonization and Reviewed Gold Set Assembly
+**Goal**: Convert the legacy labeled spreadsheets into a governed supervised dataset with explicit canonical mappings, methodology rules, and review queues.
+**Depends on**: Phase 1
+**Requirements**: [CORP-03, TAXO-02, TAXO-03, METH-01, METH-02, METH-03]
+**Success Criteria** (what must be TRUE):
+  1. Analyst can transform Seed and `Muestras` into reviewed canonical-label tables without manual spreadsheet surgery.
+  2. Analyst can surface inconsistent, blank, or unmapped theory labels for manual review instead of silently accepting them.
+  3. Methodology labels follow the agreed hierarchy and outlier rules in generated artifacts and validation checks.
+**Plans**: 3 plans
+
+Plans:
+- [ ] 02-01: Implement legacy-to-canonical label mapping and validation utilities
+- [ ] 02-02: Assemble reviewed theory training/evaluation tables with split and leakage rules
+- [ ] 02-03: Define methodology schema, outlier handling, and review exports
+
+### Phase 3: Baseline Theory Classifier
+**Goal**: Build the first reproducible classifier for the canonical theory taxonomy and benchmark the agreed text-input variants.
 **Depends on**: Phase 2
-**Requirements**: [TRN-01, TRN-02]
+**Requirements**: [THEO-01, THEO-03, EVAL-01]
 **Success Criteria** (what must be TRUE):
-  1. Analyst can launch a baseline training run and recover the config, artifact path, and model metadata for that run.
-  2. Analyst can launch a supervised-ready training path that accepts real client labels when available.
-  3. Training outputs are stored with enough metadata to compare runs later without notebook forensics.
+  1. Analyst can launch a baseline theory-classification run and recover config, artifact path, and model metadata for that run.
+  2. Analyst can compare abstract-only versus abstract-plus-keywords inputs with explicit recorded results.
+  3. Theory outputs include per-class metrics and a confusion matrix over the reviewed labeled split.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Implement baseline training flow and artifact persistence
-- [ ] 03-02: Implement supervised-ready training flow for real labeled data
+- [ ] 03-01: Implement canonical theory training and evaluation flow with artifact persistence
+- [ ] 03-02: Benchmark agreed input variants and persist comparable experiment outputs
 
-### Phase 4: Evaluation and Batch Inference
-**Goal**: Make model quality and prediction outputs measurable through repeatable metrics and explicit batch inference artifacts.
+### Phase 4: Methodology and Theme Pipeline
+**Goal**: Add the secondary analytical outputs the client asked for while keeping them structurally separate from the theory label contract.
 **Depends on**: Phase 3
-**Requirements**: [INFR-01, EVAL-01, EVAL-02]
+**Requirements**: [EVAL-02, ANLY-01]
 **Success Criteria** (what must be TRUE):
-  1. Analyst can evaluate a trained run and obtain accuracy, macro F1, weighted F1, confusion matrix, and per-class metrics.
-  2. Analyst can run batch inference and receive output columns for label, score, model version, and run identifier.
-  3. Analyst can generate a low-confidence review output using a configurable threshold.
+  1. Analyst can classify methodology according to the agreed hierarchy and evaluate it when reviewed labels exist.
+  2. Theme outputs are generated as separate modules and do not overwrite theory or methodology columns.
+  3. The repo has explicit output contracts for methodology and themes that remain traceable to a run context.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Implement metrics and evaluation reporting flow
-- [ ] 04-02: Implement batch inference and low-confidence review exports
+- [ ] 04-01: Implement methodology classification and evaluation flow
+- [ ] 04-02: Implement theme extraction module and its output contracts
 
-### Phase 5: Optional Analysis Modules and Notebook Slimming
-**Goal**: Separate optional analysis modules from the main classifier path and keep notebooks as exploratory clients of the scripted pipeline.
+### Phase 5: Full-Corpus Inference and Client Deliverables
+**Goal**: Classify the chosen corpora at scale and produce the simplified deliverables, review queues, and correlations the client expects.
 **Depends on**: Phase 4
-**Requirements**: [OPS-02, ANLY-01, REPT-01]
+**Requirements**: [THEO-02, EVAL-03, ANLY-02, ANLY-03, REPT-01, REPT-02]
 **Success Criteria** (what must be TRUE):
-  1. Topic and methodology analysis run as separate modules without overwriting main classifier columns or scores.
-  2. The notebook can consume scripted outputs for exploration while the scripts remain the source of truth.
-  3. Analyst can produce a milestone-ready report that summarizes audit, training, evaluation, and inference context.
+  1. Analyst can run batch inference over the selected corpora and receive theory predictions with confidence, lineage, and run identifiers.
+  2. Analyst can export low-confidence and taxonomy-conflict review tables for manual correction.
+  3. Analyst can generate simplified client outputs plus correlation and reference/author summaries tied to the classified corpus.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: Extract optional analysis modules and clean output contracts
-- [ ] 05-02: Slim notebook usage and generate consolidated milestone report
+- [ ] 05-01: Implement full-corpus inference plus low-confidence and conflict review exports
+- [ ] 05-02: Generate simplified deliverables, correlations, and reference/author summaries
 
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project Skeleton and Run Contracts | 0/2 | Not started | - |
-| 2. Data and Label Governance | 0/3 | Not started | - |
-| 3. Baseline and Supervised Training Paths | 0/2 | Not started | - |
-| 4. Evaluation and Batch Inference | 0/2 | Not started | - |
-| 5. Optional Analysis Modules and Notebook Slimming | 0/2 | Not started | - |
+| 1. Canonical Taxonomy and Corpus Contracts | 0/3 | Planned | - |
+| 2. Label Harmonization and Reviewed Gold Set Assembly | 0/3 | Not started | - |
+| 3. Baseline Theory Classifier | 0/2 | Not started | - |
+| 4. Methodology and Theme Pipeline | 0/2 | Not started | - |
+| 5. Full-Corpus Inference and Client Deliverables | 0/2 | Not started | - |
 
 ---
-*Roadmap created: 2026-03-24 for milestone v1.0 Pipeline Reproducible y Refactor Base*
+*Roadmap updated: 2026-04-03 for milestone v1.0 Taxonomia Arbor y Clasificacion Cliente*

@@ -1,50 +1,55 @@
 # Requirements: Abstracts Classification IA
 
-**Defined:** 2026-03-24
-**Core Value:** Produce a reliable and repeatable abstract classification workflow that can be retrained for new taxonomies with auditable data, metrics, and outputs.
+**Defined:** 2026-04-02
+**Core Value:** Deliver defensible automatic classifications over the client corpus using a canonical, article-grounded taxonomy with traceable data lineage and reviewable outputs.
 
 ## v1 Requirements
 
 ### Operations
 
-- [ ] **OPS-01**: Analyst can run named project entrypoints for audit, prepare, train, evaluate, and predict without editing notebook cells.
+- [ ] **OPS-01**: Analyst can run named project entrypoints for audit, prepare, train, evaluate, predict, and analyze without editing notebook cells.
 - [ ] **OPS-02**: Analyst can keep notebooks as exploratory views while the script/module pipeline remains the source of truth.
 
-### Environment
+### Corpus and Source Governance
 
-- [ ] **ENV-01**: Analyst can bootstrap the supported WSL ROCm environment from repo scripts and verify GPU readiness with one documented command path.
+- [ ] **CORP-01**: Analyst can ingest Google, Scopus, Seed, and `Muestras` into normalized tables while preserving workbook, sheet, and source-corpus lineage.
+- [ ] **CORP-02**: Analyst can generate an overlap and duplicate report across corpora using title and DOI matching before training or full-corpus inference.
+- [ ] **CORP-03**: Analyst can choose which corpora feed training, evaluation, and inference through config instead of notebook edits.
 
-### Data
+### Taxonomy and Label Governance
 
-- [ ] **DATA-01**: Analyst can run a reproducible audit on source, seed, and generated artifacts and receive a Markdown report with data quality findings.
-- [ ] **DATA-02**: Analyst can prepare a normalized dataset from the source spreadsheet into versioned processed files without manual notebook edits.
+- [ ] **TAXO-01**: Analyst can define a canonical theory taxonomy aligned to the six types in the Arbor article.
+- [ ] **TAXO-02**: Analyst can map legacy spreadsheet labels from Seed and `Muestras` into the canonical taxonomy through versioned config files.
+- [ ] **TAXO-03**: Analyst can detect and export inconsistent, blank, or unmapped labels for manual review before training.
 
-### Labels
+### Theory Classification
 
-- [ ] **LABL-01**: Analyst can declare taxonomy, text fields, and split settings in config files without changing training code.
-- [ ] **LABL-02**: Analyst can validate labeled examples for schema, missing text, duplicates, class balance, and obvious leakage before training.
-
-### Training
-
-- [ ] **TRN-01**: Analyst can run a reproducible baseline training flow for zero-shot and/or SetFit with saved config and artifact metadata.
-- [ ] **TRN-02**: Analyst can run a supervised training flow that is ready to consume real client-provided labels when enough labeled data exists.
-
-### Inference
-
-- [ ] **INFR-01**: Analyst can run batch inference on new abstracts and receive explicit output columns for predicted label, score, model version, and run identifier.
+- [ ] **THEO-01**: Analyst can train and evaluate a baseline automatic classifier for the canonical theory taxonomy using the available labeled examples.
+- [ ] **THEO-02**: Analyst can run batch theory classification over a chosen corpus and receive predicted canonical label, confidence, model version, run identifier, and lineage columns.
+- [ ] **THEO-03**: Analyst can choose between abstract-only and abstract-plus-keywords input variants through config so enrichment can be benchmarked explicitly.
 
 ### Evaluation
 
-- [ ] **EVAL-01**: Analyst can generate a metrics bundle with accuracy, macro F1, weighted F1, confusion matrix, and per-class performance for a labeled split.
-- [ ] **EVAL-02**: Analyst can generate a low-confidence review output using configurable score thresholds.
+- [ ] **EVAL-01**: Analyst can generate a theory metrics bundle with accuracy, macro F1, weighted F1, confusion matrix, and per-class performance for a labeled split.
+- [ ] **EVAL-02**: Analyst can generate a methodology metrics bundle when reviewed methodology labels are available.
+- [ ] **EVAL-03**: Analyst can export low-confidence and taxonomy-conflict cases using configurable thresholds and review rules.
+
+### Methodology
+
+- [ ] **METH-01**: Analyst can classify methodology as `NN`, `no empirico`, or `empirico`.
+- [ ] **METH-02**: If methodology is `empirico`, analyst can classify the sub-type as `cualitativo` or `cuantitativo`.
+- [ ] **METH-03**: Analyst can flag outliers or insufficient-evidence cases without forcing a false subtype.
 
 ### Analysis
 
-- [ ] **ANLY-01**: Analyst can run topic and methodology analysis as optional modules that do not overwrite or blur the main classifier outputs.
+- [ ] **ANLY-01**: Analyst can generate theme outputs that do not overwrite or blur the main theory and methodology outputs.
+- [ ] **ANLY-02**: Analyst can generate correlation tables crossing canonical labels with keywords, authors, or other metadata for exploratory review.
+- [ ] **ANLY-03**: Analyst can generate reference and author summaries associated with reviewed or predicted labels.
 
 ### Reporting
 
-- [ ] **REPT-01**: Analyst can generate a milestone-ready report summarizing audit, train, evaluate, and inference outputs from a single run context.
+- [ ] **REPT-01**: Analyst can export client-ready result tables with simplified columns for theory classification, methodology, themes, and review status.
+- [ ] **REPT-02**: Analyst can generate a milestone-ready report summarizing corpus audit, label mapping, training, evaluation, inference, and analytical outputs from a single run context.
 
 ## v2 Requirements
 
@@ -54,46 +59,58 @@
 
 ### Taxonomy Expansion
 
-- **TAXO-01**: Analyst can support hierarchical or multi-label classification when the client taxonomy requires it.
+- **TAXO-11**: Analyst can support hierarchical or multi-label theory classification if the client later needs families plus subtypes.
 
 ### Experiment Tracking
 
 - **EXPT-01**: Analyst can compare experiments in a persistent registry or dashboard across multiple milestone iterations.
 
+### Enrichment Features
+
+- **ENRH-01**: Analyst can experiment with references, authors, and citation metadata as learned model features beyond the baseline abstract-plus-keywords contract.
+
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Web app or API delivery | This milestone is about pipeline reliability, not serving infrastructure |
-| Automatic final taxonomy creation without client input | The client has not yet delivered the official categories and examples |
-| Training exclusively on synthetic seeds | Synthetic seeds are too repetitive to serve as trusted supervision |
+| Web app or API delivery | This milestone is about corpus governance and classification delivery, not serving infrastructure |
+| Inventing a new theory taxonomy beyond the Arbor article and client files | The milestone should align to the provided conceptual source of truth |
+| Automatically trusting unresolved spreadsheet label conflicts | `Seed` and `Muestras` require harmonization before training can be trusted |
 | Real-time inference service | Batch and report-based workflows are sufficient for the immediate delivery need |
-| Topic-model optimization before classifier stabilization | The main classifier must become reproducible and measurable first |
+| Treating Google and Scopus as a single raw pool without provenance | The corpora play different roles and must remain traceable |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | OPS-01 | Phase 1 | Pending |
-| ENV-01 | Phase 1 | Pending |
-| DATA-01 | Phase 2 | Pending |
-| DATA-02 | Phase 2 | Pending |
-| LABL-01 | Phase 2 | Pending |
-| LABL-02 | Phase 2 | Pending |
-| TRN-01 | Phase 3 | Pending |
-| TRN-02 | Phase 3 | Pending |
-| INFR-01 | Phase 4 | Pending |
-| EVAL-01 | Phase 4 | Pending |
+| OPS-02 | Phase 1 | Pending |
+| CORP-01 | Phase 1 | Pending |
+| CORP-02 | Phase 1 | Pending |
+| TAXO-01 | Phase 1 | Pending |
+| CORP-03 | Phase 2 | Pending |
+| TAXO-02 | Phase 2 | Pending |
+| TAXO-03 | Phase 2 | Pending |
+| METH-01 | Phase 2 | Pending |
+| METH-02 | Phase 2 | Pending |
+| METH-03 | Phase 2 | Pending |
+| THEO-01 | Phase 3 | Pending |
+| THEO-03 | Phase 3 | Pending |
+| EVAL-01 | Phase 3 | Pending |
 | EVAL-02 | Phase 4 | Pending |
-| OPS-02 | Phase 5 | Pending |
-| ANLY-01 | Phase 5 | Pending |
+| ANLY-01 | Phase 4 | Pending |
+| THEO-02 | Phase 5 | Pending |
+| EVAL-03 | Phase 5 | Pending |
+| ANLY-02 | Phase 5 | Pending |
+| ANLY-03 | Phase 5 | Pending |
 | REPT-01 | Phase 5 | Pending |
+| REPT-02 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 14 total
-- Mapped to phases: 14
+- v1 requirements: 22 total
+- Mapped to phases: 22
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-03-24*
-*Last updated: 2026-03-24 after initial milestone definition*
+*Requirements defined: 2026-04-02*
+*Last updated: 2026-04-02 after re-scoping the milestone around the new client datasets*

@@ -3,4 +3,4 @@
 No shipped milestones yet.
 
 Current active milestone:
-- v1.0 Pipeline Reproducible y Refactor Base
+- v1.0 Taxonomia Arbor y Clasificacion Cliente
