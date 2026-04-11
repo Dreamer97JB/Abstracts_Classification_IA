@@ -20,3 +20,5 @@ Metodologíoa
 Existía falta de correlación (cuantos constructivistas hablaron sobre el Covid)
 
 ** Hacer algo con los datos de las referencias, (que autores aparecen con que etiquetas)
+
+#subir a github
