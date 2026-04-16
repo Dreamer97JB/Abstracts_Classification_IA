@@ -29,7 +29,7 @@ This milestone turns the newly delivered client corpora, labeled subsets, and Ar
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Create package skeleton, config surface, and script entrypoints for the new classification workflow
+- [x] 01-01: Create package skeleton, config surface, and script entrypoints for the new classification workflow
 - [ ] 01-02: Implement source manifests and overlap audit for Google, Scopus, Seed, and `Muestras`
 - [ ] 01-03: Define canonical theory taxonomy config from the Arbor article and inventory legacy label aliases
 
@@ -94,11 +94,11 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Canonical Taxonomy and Corpus Contracts | 0/3 | Planned | - |
+| 1. Canonical Taxonomy and Corpus Contracts | 1/3 | In Progress | 2026-04-16 |
 | 2. Label Harmonization and Reviewed Gold Set Assembly | 0/3 | Not started | - |
 | 3. Baseline Theory Classifier | 0/2 | Not started | - |
 | 4. Methodology and Theme Pipeline | 0/2 | Not started | - |
 | 5. Full-Corpus Inference and Client Deliverables | 0/2 | Not started | - |
 
 ---
-*Roadmap updated: 2026-04-03 for milestone v1.0 Taxonomia Arbor y Clasificacion Cliente*
+*Roadmap updated: 2026-04-16 for milestone v1.0 Taxonomia Arbor y Clasificacion Cliente*

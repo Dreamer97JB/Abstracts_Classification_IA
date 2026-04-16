@@ -7,8 +7,8 @@
 
 ### Operations
 
-- [ ] **OPS-01**: Analyst can run named project entrypoints for audit, prepare, train, evaluate, predict, and analyze without editing notebook cells.
-- [ ] **OPS-02**: Analyst can keep notebooks as exploratory views while the script/module pipeline remains the source of truth.
+- [x] **OPS-01**: Analyst can run named project entrypoints for audit, prepare, train, evaluate, predict, and analyze without editing notebook cells.
+- [x] **OPS-02**: Analyst can keep notebooks as exploratory views while the script/module pipeline remains the source of truth.
 
 ### Corpus and Source Governance
 
@@ -83,8 +83,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| OPS-01 | Phase 1 | Pending |
-| OPS-02 | Phase 1 | Pending |
+| OPS-01 | Phase 1 | Complete |
+| OPS-02 | Phase 1 | Complete |
 | CORP-01 | Phase 1 | Pending |
 | CORP-02 | Phase 1 | Pending |
 | TAXO-01 | Phase 1 | Pending |
