@@ -47,15 +47,15 @@ Source of truth: `Article/Artículo_Arbor.pdf`
 
 | source_dataset | row_number | title | label_original | mapping_status | mapping_notes |
 | --- | --- | --- | --- | --- | --- |
-| seed | 8 | The emergence of technoscientific fields and the new political sociology of science | Tipo 4 CM | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 16 | SOCIOLOGY OF SCIENCE AND TECHNOLOGY | No | sin_etiqueta | Legacy label marks a non-labeled record; keep as review case instead of assigning a canonical class. |
-| seed | 17 | Introduction: A cultural sociology of the authority of science | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 20 | The sociology of the scientific community | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 29 | “Social Priming” Through the Lens of Sociology of Science: Fuzzy Boundary, Personal Experience, and Broader Atmosphere | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 38 | Strong Programme in the Sociology of Scientific Knowledge | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 40 | PERSPECTIVES ON THE SOCIOLOGY OF SCIENCE | No | sin_etiqueta | Legacy label marks a non-labeled record; keep as review case instead of assigning a canonical class. |
-| seed | 51 | Actor network theory, Bruno Latour, and the CSI | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 52 | Critical feminist history of psychology versus sociology of scientific knowledge: Contrasting views of women scientists? | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 55 | Relativism in the Philosophy of Science | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
-| seed | 68 | Editorial Vision for Science & Education | <BLANK> | sin_etiqueta | Blank legacy label; keep as review case and exclude from training until resolved. |
-| seed | 69 | Anthropology of Science: The Cuneiform World | Tipo 6 RF | revision_manual | Legacy label has no approved canonical mapping; manual review is required before supervised use. |
+| seed | 8 | The emergence of technoscientific fields and the new political sociology of science | Tipo 4 CM | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 16 | SOCIOLOGY OF SCIENCE AND TECHNOLOGY | No | sin_etiqueta | Explicitly marked as not labeled; exclude from gold and keep review-visible. |
+| seed | 17 | Introduction: A cultural sociology of the authority of science | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 20 | The sociology of the scientific community | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 29 | “Social Priming” Through the Lens of Sociology of Science: Fuzzy Boundary, Personal Experience, and Broader Atmosphere | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 38 | Strong Programme in the Sociology of Scientific Knowledge | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 40 | PERSPECTIVES ON THE SOCIOLOGY OF SCIENCE | No | sin_etiqueta | Explicitly marked as not labeled; exclude from gold and keep review-visible. |
+| seed | 51 | Actor network theory, Bruno Latour, and the CSI | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 52 | Critical feminist history of psychology versus sociology of scientific knowledge: Contrasting views of women scientists? | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 55 | Relativism in the Philosophy of Science | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |
+| seed | 68 | Editorial Vision for Science & Education | <BLANK> | sin_etiqueta | Blank legacy label; exclude from gold and keep review-visible. |
+| seed | 69 | Anthropology of Science: The Cuneiform World | Tipo 6 RF | revision_manual | Legacy label is unresolved and must stay in manual review. |

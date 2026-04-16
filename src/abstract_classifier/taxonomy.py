@@ -11,6 +11,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_TAXONOMY_CONFIG = Path("configs/taxonomy.toml")
+DEFAULT_SUPERVISION_CONFIG = Path("configs/supervision.toml")
 DEFAULT_TAXONOMY_INVENTORY = Path("reports/taxonomy_inventory.md")
 
 EXPECTED_CLASS_IDS = (
@@ -21,21 +22,9 @@ EXPECTED_CLASS_IDS = (
     "tipo_5_constructivismo_moderado",
     "tipo_6_constructivismo_fuerte_relativismo",
 )
-
-DIRECT_LEGACY_LABELS = {
-    "TIPO 1 RF": "tipo_1_realismo_fuerte",
-    "TIPO 3 AE": "tipo_3_antirrealismo_epistemologico",
-    "TIPO 4 PE": "tipo_4_pragmatismo_epistemologico",
-    "TIPO 5 CM": "tipo_5_constructivismo_moderado",
-    "TIPO 6 CF R": "tipo_6_constructivismo_fuerte_relativismo",
-}
-
-APPROVED_ALIAS_LABELS = {
-    "TIPO 2 RM": "tipo_2_realismo_moderado_critico",
-    "TIPO 2 RC": "tipo_2_realismo_moderado_critico",
-}
-
-NO_LABEL_KEYS = frozenset({"NO"})
+ALLOWED_MAPPING_STATUSES = frozenset(
+    {"directo", "fusionado", "revision_manual", "sin_etiqueta"}
+)
 
 _NON_ALNUM_PATTERN = re.compile(r"[^A-Z0-9]+")
 
@@ -62,6 +51,58 @@ class TaxonomyContract:
 
 
 @dataclass(frozen=True)
+class TheoryMappingRule:
+    legacy_label: str
+    mapping_status: str
+    canonical_id: str | None
+    mapping_notes: str
+    review_required: bool
+
+    @property
+    def lookup_key(self) -> str:
+        return normalize_lookup_key(self.legacy_label)
+
+
+@dataclass(frozen=True)
+class SupervisedSource:
+    name: str
+    source_dataset: str
+    workbook_path: Path
+    sheet_name: str
+    label_column: str
+    title_column: str
+    abstract_column: str
+    year_column: str
+    doi_column: str
+    training_bucket: str
+    evaluation_bucket: str
+    inference_bucket: str
+
+
+@dataclass(frozen=True)
+class RoutingBuckets:
+    training_default_bucket: str
+    evaluation_default_bucket: str
+    inference_default_bucket: str
+
+
+@dataclass(frozen=True)
+class SupervisionPolicy:
+    version: str
+    taxonomy_config: str
+    default_gold_source: str
+    routing: RoutingBuckets
+    sources: tuple[SupervisedSource, ...]
+    theory_mappings: tuple[TheoryMappingRule, ...]
+
+    def rule_by_lookup_key(self) -> dict[str, TheoryMappingRule]:
+        lookup: dict[str, TheoryMappingRule] = {}
+        for rule in self.theory_mappings:
+            lookup[rule.lookup_key] = rule
+        return lookup
+
+
+@dataclass(frozen=True)
 class TaxonomyNormalization:
     label_original: str
     label_canonica: str | None
@@ -82,39 +123,12 @@ class TaxonomyNormalization:
 
 
 @dataclass(frozen=True)
-class SupervisedSource:
-    source_dataset: str
-    workbook_path: Path
-    sheet_name: str
-    label_column: str
-    title_column: str
-
-
-@dataclass(frozen=True)
 class TaxonomyInventory:
     taxonomy: TaxonomyContract
     source_rows: pd.DataFrame
     direct_mappings: pd.DataFrame
     alias_mappings: pd.DataFrame
     review_rows: pd.DataFrame
-
-
-DEFAULT_SUPERVISED_SOURCES = (
-    SupervisedSource(
-        source_dataset="seed",
-        workbook_path=Path("Seed/Seed.xlsx"),
-        sheet_name="Clasificados",
-        label_column="Clasificación",
-        title_column="Title",
-    ),
-    SupervisedSource(
-        source_dataset="muestras",
-        workbook_path=Path("Database/Scopus_database.xlsx"),
-        sheet_name="Muestras",
-        label_column="Clasificación",
-        title_column="Title",
-    ),
-)
 
 
 def resolve_project_path(path: str | Path, root: Path | None = None) -> Path:
@@ -138,6 +152,14 @@ def normalize_lookup_key(value: str) -> str:
     ascii_text = ascii_text.encode("ascii", "ignore").decode("ascii")
     ascii_text = ascii_text.upper()
     return _NON_ALNUM_PATTERN.sub(" ", ascii_text).strip()
+
+
+def resolve_frame_column(columns: list[object], requested_column: str) -> str:
+    requested_key = normalize_lookup_key(requested_column)
+    for column in columns:
+        if normalize_lookup_key(str(column)) == requested_key:
+            return str(column)
+    raise KeyError(f"Column `{requested_column}` not found in worksheet.")
 
 
 def load_taxonomy(
@@ -181,21 +203,112 @@ def load_taxonomy(
     )
 
 
-def _direct_label_lookup(taxonomy: TaxonomyContract) -> dict[str, str]:
-    direct_lookup = {
-        lookup_key: canonical_id
-        for lookup_key, canonical_id in DIRECT_LEGACY_LABELS.items()
-    }
+def load_supervision_policy(
+    path: str | Path = DEFAULT_SUPERVISION_CONFIG,
+    root: Path | None = None,
+) -> SupervisionPolicy:
+    config_path = resolve_project_path(path, root=root)
+    data = tomllib.loads(config_path.read_text(encoding="utf-8"))
 
+    routing_data = data.get("routing", {})
+    routing = RoutingBuckets(
+        training_default_bucket=str(routing_data.get("training_default_bucket", "")),
+        evaluation_default_bucket=str(
+            routing_data.get("evaluation_default_bucket", "")
+        ),
+        inference_default_bucket=str(routing_data.get("inference_default_bucket", "")),
+    )
+    if not all(
+        (
+            routing.training_default_bucket,
+            routing.evaluation_default_bucket,
+            routing.inference_default_bucket,
+        )
+    ):
+        raise ValueError("Supervision routing buckets must all be configured.")
+
+    raw_sources = data.get("sources", [])
+    if not raw_sources:
+        raise ValueError("Supervision policy must declare supervised sources.")
+    sources = tuple(
+        SupervisedSource(
+            name=str(item["name"]),
+            source_dataset=str(item["source_dataset"]),
+            workbook_path=Path(str(item["workbook_path"])),
+            sheet_name=str(item["sheet_name"]),
+            label_column=str(item["label_column"]),
+            title_column=str(item["title_column"]),
+            abstract_column=str(item["abstract_column"]),
+            year_column=str(item["year_column"]),
+            doi_column=str(item["doi_column"]),
+            training_bucket=str(item["training_bucket"]),
+            evaluation_bucket=str(item["evaluation_bucket"]),
+            inference_bucket=str(item["inference_bucket"]),
+        )
+        for item in raw_sources
+    )
+
+    raw_mappings = data.get("theory_mappings", [])
+    if not raw_mappings:
+        raise ValueError("Supervision policy must declare theory mappings.")
+
+    theory_mappings = tuple(
+        _build_theory_mapping_rule(item) for item in raw_mappings
+    )
+    blank_rules = [rule for rule in theory_mappings if rule.lookup_key == ""]
+    if len(blank_rules) != 1:
+        raise ValueError("Supervision policy must define exactly one blank label rule.")
+
+    lookup_keys = [rule.lookup_key for rule in theory_mappings]
+    if len(lookup_keys) != len(set(lookup_keys)):
+        raise ValueError("Supervision theory mappings must use unique lookup keys.")
+
+    return SupervisionPolicy(
+        version=str(data.get("version", "")),
+        taxonomy_config=str(data.get("taxonomy_config", DEFAULT_TAXONOMY_CONFIG)),
+        default_gold_source=str(data.get("default_gold_source", "")),
+        routing=routing,
+        sources=sources,
+        theory_mappings=theory_mappings,
+    )
+
+
+def _build_theory_mapping_rule(data: dict[str, object]) -> TheoryMappingRule:
+    mapping_status = str(data["mapping_status"])
+    if mapping_status not in ALLOWED_MAPPING_STATUSES:
+        raise ValueError(f"Unsupported theory mapping status: {mapping_status}")
+
+    canonical_id = data.get("canonical_id")
+    canonical_value = (
+        str(canonical_id).strip()
+        if canonical_id is not None and str(canonical_id).strip()
+        else None
+    )
+
+    if mapping_status in {"directo", "fusionado"} and canonical_value is None:
+        raise ValueError(
+            "Direct and alias theory mappings must declare a canonical_id."
+        )
+    if mapping_status in {"revision_manual", "sin_etiqueta"} and canonical_value is not None:
+        raise ValueError(
+            "Review-only and no-label mappings must not declare a canonical_id."
+        )
+
+    return TheoryMappingRule(
+        legacy_label=str(data.get("legacy_label", "")),
+        mapping_status=mapping_status,
+        canonical_id=canonical_value,
+        mapping_notes=str(data.get("mapping_notes", "")),
+        review_required=bool(data.get("review_required", False)),
+    )
+
+
+def _taxonomy_label_lookup(taxonomy: TaxonomyContract) -> dict[str, str]:
+    lookup: dict[str, str] = {}
     for taxonomy_class in taxonomy.classes:
-        direct_lookup[
-            normalize_lookup_key(taxonomy_class.label)
-        ] = taxonomy_class.identifier
-        direct_lookup[
-            normalize_lookup_key(taxonomy_class.article_label)
-        ] = taxonomy_class.identifier
-
-    return direct_lookup
+        lookup[normalize_lookup_key(taxonomy_class.label)] = taxonomy_class.identifier
+        lookup[normalize_lookup_key(taxonomy_class.article_label)] = taxonomy_class.identifier
+    return lookup
 
 
 def _normalization_result(
@@ -218,57 +331,38 @@ def _normalization_result(
 def normalize_label(
     label: object,
     taxonomy: TaxonomyContract | None = None,
+    policy: SupervisionPolicy | None = None,
 ) -> TaxonomyNormalization:
     contract = taxonomy or load_taxonomy()
+    supervision_policy = policy or load_supervision_policy()
     label_original = stringify_label(label)
     lookup_key = normalize_lookup_key(label_original.strip())
 
-    if not lookup_key:
+    configured_rules = supervision_policy.rule_by_lookup_key()
+    if lookup_key in configured_rules:
+        rule = configured_rules[lookup_key]
+        taxonomy_class = (
+            contract.class_by_id(rule.canonical_id)
+            if rule.canonical_id is not None
+            else None
+        )
         return _normalization_result(
             label_original=label_original,
-            taxonomy_class=None,
-            mapping_status="sin_etiqueta",
-            mapping_notes=(
-                "Blank legacy label; keep as review case and exclude from "
-                "training until resolved."
-            ),
-            review_required=True,
+            taxonomy_class=taxonomy_class,
+            mapping_status=rule.mapping_status,
+            mapping_notes=rule.mapping_notes,
+            review_required=rule.review_required,
         )
 
-    if lookup_key in NO_LABEL_KEYS:
-        return _normalization_result(
-            label_original=label_original,
-            taxonomy_class=None,
-            mapping_status="sin_etiqueta",
-            mapping_notes=(
-                "Legacy label marks a non-labeled record; keep as review case "
-                "instead of assigning a canonical class."
-            ),
-            review_required=True,
-        )
-
-    direct_lookup = _direct_label_lookup(contract)
-    if lookup_key in direct_lookup:
-        taxonomy_class = contract.class_by_id(direct_lookup[lookup_key])
+    taxonomy_lookup = _taxonomy_label_lookup(contract)
+    if lookup_key in taxonomy_lookup:
+        taxonomy_class = contract.class_by_id(taxonomy_lookup[lookup_key])
         return _normalization_result(
             label_original=label_original,
             taxonomy_class=taxonomy_class,
             mapping_status="directo",
             mapping_notes=(
-                "Legacy label matches the canonical Arbor taxonomy contract."
-            ),
-            review_required=False,
-        )
-
-    if lookup_key in APPROVED_ALIAS_LABELS:
-        taxonomy_class = contract.class_by_id(APPROVED_ALIAS_LABELS[lookup_key])
-        return _normalization_result(
-            label_original=label_original,
-            taxonomy_class=taxonomy_class,
-            mapping_status="fusionado",
-            mapping_notes=(
-                "Approved alias policy merges legacy RM/RC labels into "
-                "canonical Type 2."
+                "Label already matches the canonical Arbor taxonomy contract."
             ),
             review_required=False,
         )
@@ -288,45 +382,47 @@ def normalize_label(
 def normalize_labels(
     labels: list[object],
     taxonomy: TaxonomyContract | None = None,
+    policy: SupervisionPolicy | None = None,
 ) -> list[TaxonomyNormalization]:
     contract = taxonomy or load_taxonomy()
-    return [normalize_label(label, taxonomy=contract) for label in labels]
+    supervision_policy = policy or load_supervision_policy()
+    return [
+        normalize_label(label, taxonomy=contract, policy=supervision_policy)
+        for label in labels
+    ]
 
 
 def load_supervised_label_rows(
     taxonomy: TaxonomyContract | None = None,
     root: Path | None = None,
-    sources: tuple[SupervisedSource, ...] = DEFAULT_SUPERVISED_SOURCES,
+    sources: tuple[SupervisedSource, ...] | None = None,
+    policy: SupervisionPolicy | None = None,
 ) -> pd.DataFrame:
     contract = taxonomy or load_taxonomy(root=root)
+    supervision_policy = policy or load_supervision_policy(root=root)
+    active_sources = sources or supervision_policy.sources
     records: list[dict[str, Any]] = []
 
-    for source in sources:
+    for source in active_sources:
         workbook_path = resolve_project_path(source.workbook_path, root=root)
         frame = pd.read_excel(workbook_path, sheet_name=source.sheet_name)
+        columns = list(frame.columns)
 
-        if source.label_column not in frame.columns:
-            raise KeyError(
-                f"Label column `{source.label_column}` not found in "
-                f"{source.workbook_path}::{source.sheet_name}."
-            )
-        if source.title_column not in frame.columns:
-            raise KeyError(
-                f"Title column `{source.title_column}` not found in "
-                f"{source.workbook_path}::{source.sheet_name}."
-            )
+        label_column = resolve_frame_column(columns, source.label_column)
+        title_column = resolve_frame_column(columns, source.title_column)
 
         for row_number, row in enumerate(frame.to_dict(orient="records"), start=2):
             normalization = normalize_label(
-                row.get(source.label_column),
+                row.get(label_column),
                 taxonomy=contract,
+                policy=supervision_policy,
             )
             record = {
                 "source_dataset": source.source_dataset,
                 "source_workbook": source.workbook_path.as_posix(),
                 "source_sheet": source.sheet_name,
                 "row_number": row_number,
-                "title": stringify_label(row.get(source.title_column)).strip(),
+                "title": stringify_label(row.get(title_column)).strip(),
             }
             record.update(normalization.as_record())
             records.append(record)
@@ -364,13 +460,19 @@ def _summarize_rows(rows: pd.DataFrame, mapping_status: str) -> pd.DataFrame:
 def build_taxonomy_inventory(
     taxonomy: TaxonomyContract | None = None,
     root: Path | None = None,
-    sources: tuple[SupervisedSource, ...] = DEFAULT_SUPERVISED_SOURCES,
+    sources: tuple[SupervisedSource, ...] | None = None,
+    policy: SupervisionPolicy | None = None,
 ) -> TaxonomyInventory:
-    contract = taxonomy or load_taxonomy(root=root)
+    supervision_policy = policy or load_supervision_policy(root=root)
+    contract = taxonomy or load_taxonomy(
+        supervision_policy.taxonomy_config,
+        root=root,
+    )
     source_rows = load_supervised_label_rows(
         taxonomy=contract,
         root=root,
         sources=sources,
+        policy=supervision_policy,
     )
 
     review_rows = (
@@ -436,9 +538,7 @@ def render_taxonomy_inventory_report(inventory: TaxonomyInventory) -> str:
     lines.append("## Canonical taxonomy")
     lines.append("")
     for taxonomy_class in inventory.taxonomy.classes:
-        lines.append(
-            f"- `{taxonomy_class.identifier}`: `{taxonomy_class.label}`"
-        )
+        lines.append(f"- `{taxonomy_class.identifier}`: `{taxonomy_class.label}`")
     lines.append("")
 
     source_summary = (
@@ -517,12 +617,15 @@ def render_taxonomy_inventory_report(inventory: TaxonomyInventory) -> str:
 def write_taxonomy_inventory_report(
     output: str | Path = DEFAULT_TAXONOMY_INVENTORY,
     taxonomy_path: str | Path = DEFAULT_TAXONOMY_CONFIG,
+    supervision_path: str | Path = DEFAULT_SUPERVISION_CONFIG,
     root: Path | None = None,
 ) -> Path:
     project_root = root or ROOT
+    supervision_policy = load_supervision_policy(supervision_path, root=project_root)
     inventory = build_taxonomy_inventory(
         taxonomy=load_taxonomy(taxonomy_path, root=project_root),
         root=project_root,
+        policy=supervision_policy,
     )
 
     output_path = Path(output)
