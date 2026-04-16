@@ -1,0 +1,43 @@
+[manifest]
+version = 1
+lineage_fields = ["source_dataset", "source_sheet", "source_path", "source_role"]
+
+[[sources]]
+source_dataset = "google_corpus"
+path = "googleScholarPeriodAbs.xlsx"
+sheet = "gschoolar_resultsPeriod_abs"
+role = "corpus"
+source_type = "workbook"
+source_system = "google_scholar"
+lineage_workbook = "googleScholarPeriodAbs.xlsx"
+lineage_notes = "Primary Google Scholar export for corpus consolidation."
+
+[[sources]]
+source_dataset = "scopus_base"
+path = "Database/Scopus_database.xlsx"
+sheet = "Base"
+role = "corpus"
+source_type = "workbook"
+source_system = "scopus"
+lineage_workbook = "Scopus_database.xlsx"
+lineage_notes = "Primary Scopus export with richer metadata for completeness scoring."
+
+[[sources]]
+source_dataset = "seed_gold"
+path = "Seed/Seed.xlsx"
+sheet = "Clasificados"
+role = "initial_gold"
+source_type = "workbook"
+source_system = "seed"
+lineage_workbook = "Seed.xlsx"
+lineage_notes = "Only initial gold supervision workbook approved by the client."
+
+[[sources]]
+source_dataset = "scopus_muestras"
+path = "Database/Scopus_database.xlsx"
+sheet = "Muestras"
+role = "aux_review"
+source_type = "workbook"
+source_system = "scopus"
+lineage_workbook = "Scopus_database.xlsx"
+lineage_notes = "Reviewed auxiliary Scopus subset reserved for manual review and later supervision decisions."
