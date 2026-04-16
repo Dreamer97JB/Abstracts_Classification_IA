@@ -1,0 +1,158 @@
+record_id,split,split_version,split_seed,same_article_group
+muestras:Muestras:11,test,phase2_v1,20260416,doi:10.1007/978-94-007-7654-8_58
+muestras:Muestras:23,test,phase2_v1,20260416,doi:10.1007/978-981-97-9049-4
+muestras:Muestras:24,test,phase2_v1,20260416,doi:10.1007/978-981-99-7188-6
+muestras:Muestras:45,test,phase2_v1,20260416,doi:10.1016/j.socscimed.2013.02.035
+muestras:Muestras:18,test,phase2_v1,20260416,doi:10.1023/a:1012714020453
+muestras:Muestras:19,test,phase2_v1,20260416,doi:10.1057/s41292-017-0047-2
+muestras:Muestras:66,test,phase2_v1,20260416,doi:10.1111/j.1365-2729.2011.00406.x
+muestras:Muestras:2,test,phase2_v1,20260416,doi:10.1111/jssr.12849
+muestras:Muestras:62,test,phase2_v1,20260416,doi:10.1146/annurev-lawsocsci-041822-041426
+muestras:Muestras:79,test,phase2_v1,20260416,doi:10.1177/13505084251321024
+muestras:Muestras:78,test,phase2_v1,20260416,doi:10.1371/journal.pone.0228613
+muestras:Muestras:68,test,phase2_v1,20260416,doi:10.1484/j.cnt.5.131461
+muestras:Muestras:40,test,phase2_v1,20260416,doi:10.4324/9780367823276
+muestras:Muestras:54,test,phase2_v1,20260416,doi:10.4324/9780429437069-17
+muestras:Muestras:88,test,phase2_v1,20260416,doi:10.4324/9781003454113
+seed:Clasificados:47,test,phase2_v1,20260416,title_year:a new political sociology of science:2021
+seed:Clasificados:3,test,phase2_v1,20260416,title_year:benefits motivations and challenges of international collaborative research a sociology of science case study:2021
+seed:Clasificados:70,test,phase2_v1,20260416,title_year:chapter 4 measuring the quality of sociological research problems in the use of the science citation index 1971:2024
+muestras:Muestras:25,test,phase2_v1,20260416,title_year:epidemiology and policy the post war context:2002
+seed:Clasificados:27,test,phase2_v1,20260416,title_year:experimentation in the sociology of science representational and generative registers in the imitation game:2019
+muestras:Muestras:70,test,phase2_v1,20260416,title_year:fleck anatomical drawings and early modern history:2008
+seed:Clasificados:12,test,phase2_v1,20260416,title_year:meaning at the planck scale contextualized word embeddings for doing history philosophy and sociology of science:2024
+seed:Clasificados:2,test,phase2_v1,20260416,title_year:scientific writing as a social act a review of the literature of the sociology of science:2019
+seed:Clasificados:49,test,phase2_v1,20260416,title_year:the sociology of science in africa:0
+muestras:Muestras:42,train,phase2_v1,20260416,doi:10.1007/978-3-031-07877-4_2
+muestras:Muestras:5,train,phase2_v1,20260416,doi:10.1007/s12304-021-09436-w
+muestras:Muestras:58,train,phase2_v1,20260416,doi:10.1016/0048-7333(96)00882-7
+muestras:Muestras:26,train,phase2_v1,20260416,doi:10.1016/j.jenvman.2016.10.006
+muestras:Muestras:84,train,phase2_v1,20260416,doi:10.1016/j.sftr.2025.100451
+muestras:Muestras:37,train,phase2_v1,20260416,doi:10.1016/j.shpsc.2009.09.005
+muestras:Muestras:100,train,phase2_v1,20260416,doi:10.1017/9789382264965.013
+muestras:Muestras:99,train,phase2_v1,20260416,doi:10.1057/s41267-020-00392-0
+muestras:Muestras:53,train,phase2_v1,20260416,doi:10.1057/s41599-022-01138-z
+muestras:Muestras:33,train,phase2_v1,20260416,doi:10.1057/s41599-022-01435-7
+muestras:Muestras:9,train,phase2_v1,20260416,doi:10.1080/0007131022000000563
+muestras:Muestras:76,train,phase2_v1,20260416,doi:10.1080/01436597.2020.1807929
+muestras:Muestras:56,train,phase2_v1,20260416,doi:10.1080/02635140600811668
+muestras:Muestras:92,train,phase2_v1,20260416,doi:10.1080/02698590802280878
+muestras:Muestras:86,train,phase2_v1,20260416,doi:10.1080/02698599108573397
+muestras:Muestras:67,train,phase2_v1,20260416,doi:10.1080/1369183x.2024.2307770
+muestras:Muestras:6,train,phase2_v1,20260416,doi:10.1080/17508487.2017.1327876
+muestras:Muestras:80,train,phase2_v1,20260416,doi:10.1093/acprof:oso/9780199231188.003.0004
+muestras:Muestras:97,train,phase2_v1,20260416,doi:10.1093/acprof:oso/9780199578061.001.0001
+muestras:Muestras:65,train,phase2_v1,20260416,doi:10.1108/eb021159
+muestras:Muestras:31,train,phase2_v1,20260416,doi:10.1109/istas.2015.7439419
+muestras:Muestras:7,train,phase2_v1,20260416,doi:10.1111/1467-9655.12292
+muestras:Muestras:3,train,phase2_v1,20260416,doi:10.1111/geoj.12217
+muestras:Muestras:16,train,phase2_v1,20260416,doi:10.1111/hith.10683
+muestras:Muestras:8,train,phase2_v1,20260416,doi:10.1111/j.1468-5914.1980.tb00013.x
+muestras:Muestras:15,train,phase2_v1,20260416,doi:10.1140/epjds/s13688-018-0166-4
+muestras:Muestras:75,train,phase2_v1,20260416,doi:10.1145/3047273.3047310
+muestras:Muestras:90,train,phase2_v1,20260416,doi:10.1162/qss_a_00062
+muestras:Muestras:20,train,phase2_v1,20260416,doi:10.1163/9789004333109_004
+muestras:Muestras:95,train,phase2_v1,20260416,doi:10.1177/0016549201063005004
+muestras:Muestras:82,train,phase2_v1,20260416,doi:10.1177/00302228221098893
+muestras:Muestras:94,train,phase2_v1,20260416,doi:10.1177/0162243909345836
+muestras:Muestras:48,train,phase2_v1,20260416,doi:10.1177/0162243919850885
+muestras:Muestras:44,train,phase2_v1,20260416,doi:10.1177/0306312707076597
+muestras:Muestras:73,train,phase2_v1,20260416,doi:10.1177/030631282012004002
+muestras:Muestras:36,train,phase2_v1,20260416,doi:10.1177/09717218221102613
+muestras:Muestras:64,train,phase2_v1,20260416,doi:10.1177/1350508411420196
+muestras:Muestras:35,train,phase2_v1,20260416,doi:10.1177/13548565221111073
+muestras:Muestras:34,train,phase2_v1,20260416,doi:10.1177/23996544231209149
+muestras:Muestras:32,train,phase2_v1,20260416,doi:10.1525/ae.2003.30.3.359
+muestras:Muestras:93,train,phase2_v1,20260416,doi:10.17645/si.8966
+muestras:Muestras:14,train,phase2_v1,20260416,doi:10.18294/sc.2020.2210
+muestras:Muestras:87,train,phase2_v1,20260416,doi:10.18778/1733-8069.17.1.03
+muestras:Muestras:74,train,phase2_v1,20260416,doi:10.3389/feduc.2022.1000905
+muestras:Muestras:72,train,phase2_v1,20260416,doi:10.4141/cjps07116
+muestras:Muestras:21,train,phase2_v1,20260416,doi:10.4324/9780429268830-14
+muestras:Muestras:96,train,phase2_v1,20260416,doi:10.4324/9781003136842-8
+muestras:Muestras:43,train,phase2_v1,20260416,doi:10.4324/9781003140757-7
+muestras:Muestras:17,train,phase2_v1,20260416,doi:10.4324/9781003246893
+muestras:Muestras:52,train,phase2_v1,20260416,doi:10.4324/9781003279259-1
+muestras:Muestras:57,train,phase2_v1,20260416,doi:10.4324/9781003637752-13
+muestras:Muestras:30,train,phase2_v1,20260416,doi:10.4324/9781315041032-8
+muestras:Muestras:55,train,phase2_v1,20260416,doi:10.4324/9781315135571-8
+muestras:Muestras:22,train,phase2_v1,20260416,doi:10.4324/9781315211909
+muestras:Muestras:91,train,phase2_v1,20260416,doi:10.4324/9781315763552-10
+muestras:Muestras:46,train,phase2_v1,20260416,doi:10.5040/9798881813482
+seed:Clasificados:11,train,phase2_v1,20260416,title_year:academic air travel debates tensions and the need for a sociology of science perspective:2024
+muestras:Muestras:89,train,phase2_v1,20260416,title_year:alternatives and passages english teaching learning and mingoville:2010
+seed:Clasificados:76,train,phase2_v1,20260416,title_year:at the crossroads of sociology and sts:2023
+seed:Clasificados:63,train,phase2_v1,20260416,title_year:big data in studies of science new research field:2021
+seed:Clasificados:67,train,phase2_v1,20260416,title_year:bioethics and sociology the place of social studies of science and technology:2022
+seed:Clasificados:58,train,phase2_v1,20260416,title_year:book title digitalization society a sociology of technology perspective on current trends in data digital security and the internet:2019
+seed:Clasificados:26,train,phase2_v1,20260416,title_year:bourdieu s philosophy and sociology of science a critical appraisal:2023
+muestras:Muestras:60,train,phase2_v1,20260416,title_year:eco deconstruction derrida and environmental philosophy:2018
+seed:Clasificados:34,train,phase2_v1,20260416,title_year:french neopositivism and the logic psychology and sociology of scientific discovery:2021
+seed:Clasificados:46,train,phase2_v1,20260416,title_year:from science and religion to transcendence in science or what we can learn from the history of science and technology studies:2019
+seed:Clasificados:36,train,phase2_v1,20260416,title_year:from the problem of genius to the integration of philosophy history and sociology of science edgar zilsel s life and work viewed in the context of recent:2022
+muestras:Muestras:83,train,phase2_v1,20260416,title_year:genetic science and new digital technologies science and technology studies and health praxis:2023
+seed:Clasificados:65,train,phase2_v1,20260416,title_year:historiography and national histories of sociology methods and methodologies:2021
+seed:Clasificados:7,train,phase2_v1,20260416,title_year:how can governance change research content linking science policy studies to the sociology of science:2019
+seed:Clasificados:33,train,phase2_v1,20260416,title_year:imaginaries of care and science in anthropocene utopian futurology the sociology of science in kim s robinson s the ministry for the future:2024
+seed:Clasificados:21,train,phase2_v1,20260416,title_year:introduction how the sociology of science and technology addresses science and society relations:2021
+seed:Clasificados:6,train,phase2_v1,20260416,title_year:on methods ontologies and representation in the sociology of science where do we stand:2024
+seed:Clasificados:44,train,phase2_v1,20260416,title_year:on the pursuitworthiness of qualitative methods in empirical philosophy of science:2023
+seed:Clasificados:4,train,phase2_v1,20260416,title_year:organisation matters towards an organisational sociology of science communication:2020
+muestras:Muestras:50,train,phase2_v1,20260416,title_year:planting contemporary practice theory in the garden of information science:2011
+seed:Clasificados:50,train,phase2_v1,20260416,title_year:political sociology of science and technology and science policies in india an historical throwback:2021
+seed:Clasificados:35,train,phase2_v1,20260416,title_year:popper s sociology of science and its political deficit:2023
+seed:Clasificados:45,train,phase2_v1,20260416,title_year:put to the test for a new sociology of testing:2020
+seed:Clasificados:9,train,phase2_v1,20260416,title_year:recoding liberalism philosophy and sociology of science against planning:2020
+seed:Clasificados:61,train,phase2_v1,20260416,title_year:reflexive methodology and the empirical theory of science:2021
+seed:Clasificados:72,train,phase2_v1,20260416,title_year:rethinking science as a vocation one hundred years of bureaucratization of academic science:2022
+seed:Clasificados:15,train,phase2_v1,20260416,title_year:robert merton and the sociology of science the sociology of science theoretical and empirical investigations robert k merton:2022
+seed:Clasificados:64,train,phase2_v1,20260416,title_year:routledge handbook of public communication of science and technology:2021
+seed:Clasificados:54,train,phase2_v1,20260416,title_year:science education and the pandemic 1 year on emergence of new conceptual tools and re calibration of existing educational approaches:2021
+seed:Clasificados:5,train,phase2_v1,20260416,title_year:science education in the era of a pandemic how can history philosophy and sociology of science contribute to education for understanding and solving the covid 19:2020
+seed:Clasificados:42,train,phase2_v1,20260416,title_year:science part ii the study of science:2022
+seed:Clasificados:13,train,phase2_v1,20260416,title_year:science studies and sociology:2022
+seed:Clasificados:43,train,phase2_v1,20260416,title_year:scientific thinking and critical thinking a keystone for history philosophy and sociology of science teaching:2019
+seed:Clasificados:25,train,phase2_v1,20260416,title_year:sociology and history of science:0
+seed:Clasificados:30,train,phase2_v1,20260416,title_year:sociology of law and science:2020
+seed:Clasificados:56,train,phase2_v1,20260416,title_year:sociology of science and problem of method in weber:0
+seed:Clasificados:73,train,phase2_v1,20260416,title_year:sociology of science and technology in brazil an analysis of articles in a1 sociology journals published between 2010 and 2018:2022
+seed:Clasificados:24,train,phase2_v1,20260416,title_year:sociology of science and technology:2023
+seed:Clasificados:31,train,phase2_v1,20260416,title_year:sociology of science why they are mostly wrong:0
+muestras:Muestras:28,train,phase2_v1,20260416,title_year:soft computing confronting philosophical and sociological critiques to classical ai:2009
+seed:Clasificados:57,train,phase2_v1,20260416,title_year:the geo ecological turn in sociology and its implications for the sociology of the arts:2022
+seed:Clasificados:59,train,phase2_v1,20260416,title_year:the history of science and the history of society:2020
+seed:Clasificados:23,train,phase2_v1,20260416,title_year:the legitimacy of science:2023
+seed:Clasificados:71,train,phase2_v1,20260416,title_year:the making of professors assessment and recognition in academic recruitment:2019
+muestras:Muestras:12,train,phase2_v1,20260416,title_year:the modality of the textual institutionalisation of literary studies towards a sociology:2011
+muestras:Muestras:69,train,phase2_v1,20260416,title_year:the science of religion and the sociology of knowledge some methodological questions:2015
+seed:Clasificados:41,train,phase2_v1,20260416,title_year:the sociology of ignorance and post truth politics:2020
+seed:Clasificados:14,train,phase2_v1,20260416,title_year:the sociology of science and social constructivism:2019
+seed:Clasificados:53,train,phase2_v1,20260416,title_year:the traditional approach of sociology of science in current pedagogical discourse evaluating key is:2023
+seed:Clasificados:48,train,phase2_v1,20260416,title_year:three studies in the cultural sociology of science:2019
+seed:Clasificados:74,train,phase2_v1,20260416,title_year:towards periodizations of science in the history of science:2019
+muestras:Muestras:51,train,phase2_v1,20260416,title_year:why designers and philosophers should meet in school:2014
+seed:Clasificados:66,train,phase2_v1,20260416,title_year:why we need a psychology of science:2024
+muestras:Muestras:61,val,phase2_v1,20260416,doi:10.1016/j.geoforum.2024.103948
+muestras:Muestras:49,val,phase2_v1,20260416,doi:10.1016/j.shpsc.2017.06.006
+muestras:Muestras:77,val,phase2_v1,20260416,doi:10.1080/02691728.2016.1227396
+muestras:Muestras:41,val,phase2_v1,20260416,doi:10.1080/20551940.2023.2286769
+muestras:Muestras:85,val,phase2_v1,20260416,doi:10.1086/731606
+muestras:Muestras:63,val,phase2_v1,20260416,doi:10.1093/oso/9780190949501.003.0015
+muestras:Muestras:71,val,phase2_v1,20260416,doi:10.1093/oxfordhb/9780197510636.013.3
+muestras:Muestras:27,val,phase2_v1,20260416,doi:10.1111/risa.13298
+muestras:Muestras:10,val,phase2_v1,20260416,doi:10.1177/0091450916661821
+muestras:Muestras:81,val,phase2_v1,20260416,doi:10.1177/20539517261419359
+muestras:Muestras:39,val,phase2_v1,20260416,doi:10.20897/femenc/11161
+muestras:Muestras:59,val,phase2_v1,20260416,doi:10.23941/ejpe.v2i1.23
+muestras:Muestras:13,val,phase2_v1,20260416,doi:10.4324/9781003348528
+seed:Clasificados:75,val,phase2_v1,20260416,title_year:images of science a reality check:2022
+muestras:Muestras:4,val,phase2_v1,20260416,title_year:multi spatiality of social media platforms the enactment of trust in fluid space:2018
+seed:Clasificados:60,val,phase2_v1,20260416,title_year:past as prologue approaches to the study of confirmation in science:2020
+seed:Clasificados:10,val,phase2_v1,20260416,title_year:science education in the light of covid 19 the contribution of history philosophy and sociology of science:2020
+seed:Clasificados:19,val,phase2_v1,20260416,title_year:sociology of expertise as public sociology:2023
+seed:Clasificados:62,val,phase2_v1,20260416,title_year:sociology or psychology on conceptual architecture of david bloor s strong programme in sociology of scientific knowledge:2020
+seed:Clasificados:28,val,phase2_v1,20260416,title_year:the history philosophy and sociology of science in science teaching:2020
+seed:Clasificados:39,val,phase2_v1,20260416,title_year:the politics of calculation towards a sociology of quantification in governance:2019
+seed:Clasificados:22,val,phase2_v1,20260416,title_year:the sociology of science in africa:2022
+seed:Clasificados:18,val,phase2_v1,20260416,title_year:towards a sociology of science and theology:2024
+seed:Clasificados:37,val,phase2_v1,20260416,title_year:what makes a good phd thesis norms of science as reflected in written assessments of phd theses:2023

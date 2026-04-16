@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Phase 02 planned - execute next
-last_updated: "2026-04-16T06:33:27.7289611-05:00"
+status: Ready for Phase 3 planning
+stopped_at: Phase 02 executed - plan Phase 03 next
+last_updated: "2026-04-16T07:15:00-05:00"
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 6
-  completed_plans: 3
+  completed_phases: 2
+  total_plans: 12
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,70 +19,47 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-16)
 
 **Core value:** Deliver defensible automatic classifications over the client corpus using a canonical, article-grounded taxonomy with traceable data lineage and reviewable outputs.
-**Current focus:** Phase 2 - Label Harmonization and Reviewed Gold Set Assembly
+**Current focus:** Phase 3 preparation - Baseline Theory Classifier
 
 ## Current Position
 
-Phase: 2 of 5 (Label Harmonization and Reviewed Gold Set Assembly)
-Plan: Planned (3 plans ready)
-Status: Ready to execute
-Last activity: 2026-04-16 - Phase 02 context, research, validation, and plans created
+Phase: 3 of 5 (Baseline Theory Classifier)
+Plan: Not started
+Status: Ready for Phase 3 planning
+Last activity: 2026-04-16 - Phase 02 executed with canonical supervision outputs, split artifacts, and methodology review scaffolding
 
-Progress: [##........] 20%
+Progress: [####......] 40%
 
-## Performance Metrics
+## Phase 2 Outcome
 
-**Velocity:**
+- Config-driven theory mapping now lives in `configs/supervision.toml`.
+- Canonical theory, candidate, gold, excluded, split, and methodology CSV artifacts can be generated from the CLI without editing raw workbooks.
+- Methodology hierarchy and validation now live in `configs/methodology.toml` and `src/abstract_classifier/methodology.py`.
+- Phase 2 artifacts were generated under `reports/` for direct inspection and downstream use.
 
-- Total plans completed: 3
-- Average duration: 20min
-- Total execution time: 61min
+## Decisions
 
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01 | 3 | 61min | 20min |
-
-**Recent Trend:**
-
-- Last 3 plans: 7min, 50min, 4min
-- Trend: Mixed
-
-| Plan | Duration | Tasks | Files |
-|------|----------|-------|-------|
-| Phase 01 P01-01 | 7min | 3 tasks | 15 files |
-| Phase 01 P01-02 | 50min | 3 tasks | 10 files |
-| Phase 01 P01-03 | 4min | 3 tasks | 5 files |
-
-## Accumulated Context
-
-### Decisions
-
-Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - [Milestone v1.0]: Use WSL ROCm as the main training path for GPU-backed model work.
 - [Milestone v1.0]: Use the Arbor article as the source of truth for canonical theory labels.
 - [Milestone v1.0]: Treat Scopus as the primary operational corpus and Google as a secondary historical corpus.
 - [Phase 01]: Established `src/abstract_classifier` as the operational source of truth with an argparse CLI router.
-- [Phase 01]: Kept `scripts/data_audit.py` as a compatibility wrapper over package audit logic instead of duplicating behavior.
 - [Phase 01]: Established governed source manifests with strict overlap rules and richer-row winner selection.
-- [Phase 01]: Locked the canonical Arbor taxonomy contract and the initial alias normalization inventory.
-- [Phase 01]: Reserved `train`, `evaluate`, `predict`, and `analyze` as non-failing placeholders until later phases implement them.
+- [Phase 02]: Locked supervised-source routing, useful-abstract threshold, and split defaults into versioned config.
+- [Phase 02]: Preserved unresolved theory and missing methodology evidence as explicit review outputs instead of forcing labels.
 
-### Pending Todos
+## Pending Todos
 
-None yet.
+- Plan and execute Phase 03 baseline training and evaluation workflow against the governed Phase 2 outputs.
 
-### Blockers/Concerns
+## Blockers/Concerns
 
-- `Seed` and `Muestras` still need reviewed canonical remapping tables before they can act as a governed gold set.
-- Some config/docs still reference the Arbor PDF with filename drift, which weakens traceability even though the semantic contract is already implemented.
-- `Seed` and `Muestras` do not currently expose explicit methodology columns, so Phase 2 must start with schema plus review scaffolding rather than imported methodology truth.
+- `Seed` and `Muestras` still lack native methodology labels, so methodology remains review-first rather than train-ready.
+- The Arbor PDF filename still appears with encoding drift in some existing docs and reports, which should be cleaned up for traceability.
 
 ## Session Continuity
 
 Last session: 2026-04-16
-Stopped at: Phase 02 planned - execute next
-Resume file: .planning/phases/02-label-harmonization-and-reviewed-gold-set-assembly/02-01-PLAN.md
+Stopped at: Phase 02 executed - Phase 03 planning next
+Resume file: .planning/ROADMAP.md

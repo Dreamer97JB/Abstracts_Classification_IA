@@ -3,12 +3,15 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from ..methodology import DEFAULT_METHODOLOGY_CONFIG, load_methodology_contract
 from ..splits import write_split_assignments
 from ..supervision import (
     build_candidate_supervision_outputs,
     write_candidate_rows,
     write_excluded_rows,
     write_gold_rows,
+    write_methodology_review_rows,
+    write_methodology_rows,
     write_theory_mapping_rows,
     write_theory_review_rows,
 )
@@ -31,6 +34,10 @@ DESCRIPTION = (
 def handle_command(args: argparse.Namespace) -> int:
     supervision_policy = load_supervision_policy(args.supervision_config, root=ROOT)
     taxonomy = load_taxonomy(args.taxonomy_config, root=ROOT)
+    methodology_contract = load_methodology_contract(
+        args.methodology_config,
+        root=ROOT,
+    )
     output_path = write_taxonomy_inventory_report(
         output=args.inventory_output,
         taxonomy_path=args.taxonomy_config,
@@ -64,6 +71,7 @@ def handle_command(args: argparse.Namespace) -> int:
             root=ROOT,
             policy=supervision_policy,
             taxonomy=taxonomy,
+            methodology_contract=methodology_contract,
         )
         print(f"Candidate supervision rows generated at: {candidate_path}")
     if args.gold_output or args.excluded_output or args.split_output:
@@ -71,6 +79,7 @@ def handle_command(args: argparse.Namespace) -> int:
             root=ROOT,
             policy=supervision_policy,
             taxonomy=taxonomy,
+            methodology_contract=methodology_contract,
         )
 
     if args.gold_output:
@@ -79,6 +88,7 @@ def handle_command(args: argparse.Namespace) -> int:
             root=ROOT,
             policy=supervision_policy,
             taxonomy=taxonomy,
+            methodology_contract=methodology_contract,
         )
         print(f"Gold supervision rows generated at: {gold_path}")
 
@@ -88,6 +98,7 @@ def handle_command(args: argparse.Namespace) -> int:
             root=ROOT,
             policy=supervision_policy,
             taxonomy=taxonomy,
+            methodology_contract=methodology_contract,
         )
         print(f"Excluded supervision rows generated at: {excluded_path}")
 
@@ -97,6 +108,7 @@ def handle_command(args: argparse.Namespace) -> int:
                 root=ROOT,
                 policy=supervision_policy,
                 taxonomy=taxonomy,
+                methodology_contract=methodology_contract,
             )
         split_path = write_split_assignments(
             candidate_outputs.candidate_rows,
@@ -105,6 +117,26 @@ def handle_command(args: argparse.Namespace) -> int:
             policy=supervision_policy,
         )
         print(f"Split assignments generated at: {split_path}")
+
+    if args.methodology_output:
+        methodology_path = write_methodology_rows(
+            args.methodology_output,
+            root=ROOT,
+            policy=supervision_policy,
+            taxonomy=taxonomy,
+            methodology_contract=methodology_contract,
+        )
+        print(f"Methodology rows generated at: {methodology_path}")
+
+    if args.methodology_review_output:
+        methodology_review_path = write_methodology_review_rows(
+            args.methodology_review_output,
+            root=ROOT,
+            policy=supervision_policy,
+            taxonomy=taxonomy,
+            methodology_contract=methodology_contract,
+        )
+        print(f"Methodology review rows generated at: {methodology_review_path}")
 
     return 0
 
@@ -124,6 +156,11 @@ def register(subparsers) -> None:
         "--supervision-config",
         default=str(DEFAULT_SUPERVISION_CONFIG),
         help="Path to the supervision policy TOML contract.",
+    )
+    parser.add_argument(
+        "--methodology-config",
+        default=str(DEFAULT_METHODOLOGY_CONFIG),
+        help="Path to the methodology policy TOML contract.",
     )
     parser.add_argument(
         "--inventory-output",
@@ -153,5 +190,13 @@ def register(subparsers) -> None:
     parser.add_argument(
         "--split-output",
         help="Optional output path for split assignment CSV rows.",
+    )
+    parser.add_argument(
+        "--methodology-output",
+        help="Optional output path for methodology-enriched supervision rows.",
+    )
+    parser.add_argument(
+        "--methodology-review-output",
+        help="Optional output path for methodology review CSV rows.",
     )
     parser.set_defaults(handler=handle_command)

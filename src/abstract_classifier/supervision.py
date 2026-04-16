@@ -7,6 +7,12 @@ from pathlib import Path
 
 import pandas as pd
 
+from .methodology import (
+    METHODOLOGY_COLUMNS,
+    MethodologyContract,
+    build_missing_methodology_assignment,
+    load_methodology_contract,
+)
 from .normalization import normalize_doi, normalize_title, normalize_year
 from .taxonomy import (
     ROOT,
@@ -38,12 +44,22 @@ THEORY_OUTPUT_COLUMNS = [
     "mapping_notes",
     "review_required",
 ]
-CANDIDATE_OUTPUT_COLUMNS = THEORY_OUTPUT_COLUMNS + [
+BASE_CANDIDATE_OUTPUT_COLUMNS = THEORY_OUTPUT_COLUMNS + [
     "include_in_gold",
     "title_normalized",
     "doi_normalized",
     "abstract_hash",
 ]
+CANDIDATE_OUTPUT_COLUMNS = BASE_CANDIDATE_OUTPUT_COLUMNS + METHODOLOGY_COLUMNS
+METHODOLOGY_OUTPUT_COLUMNS = [
+    "record_id",
+    "source_dataset",
+    "source_sheet",
+    "title",
+    "abstract",
+    "year",
+    "doi",
+] + METHODOLOGY_COLUMNS
 EXCLUDED_OUTPUT_COLUMNS = CANDIDATE_OUTPUT_COLUMNS + ["gold_exclusion_reason"]
 _INTERNAL_COLUMNS = EXCLUDED_OUTPUT_COLUMNS + ["same_article_group"]
 
@@ -71,6 +87,7 @@ def build_theory_mapping_outputs(
         root=root,
         policy=policy,
         taxonomy=taxonomy,
+        methodology_contract=None,
     )
     canonical_rows = theory_rows.loc[:, THEORY_OUTPUT_COLUMNS].copy()
     review_rows = canonical_rows.loc[canonical_rows["review_required"]].reset_index(
@@ -87,11 +104,13 @@ def build_candidate_supervision_outputs(
     root: Path | None = None,
     policy: SupervisionPolicy | None = None,
     taxonomy: TaxonomyContract | None = None,
+    methodology_contract: MethodologyContract | None = None,
 ) -> CandidateSupervisionOutputs:
     candidate_rows = _build_internal_supervision_rows(
         root=root,
         policy=policy,
         taxonomy=taxonomy,
+        methodology_contract=methodology_contract,
     )
     candidate_output = candidate_rows.loc[:, CANDIDATE_OUTPUT_COLUMNS].copy()
     gold_rows = candidate_output.loc[candidate_output["include_in_gold"]].reset_index(
@@ -108,11 +127,35 @@ def build_candidate_supervision_outputs(
     )
 
 
+def build_methodology_outputs(
+    *,
+    root: Path | None = None,
+    policy: SupervisionPolicy | None = None,
+    taxonomy: TaxonomyContract | None = None,
+    methodology_contract: MethodologyContract | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    candidate_outputs = build_candidate_supervision_outputs(
+        root=root,
+        policy=policy,
+        taxonomy=taxonomy,
+        methodology_contract=methodology_contract,
+    )
+    methodology_rows = candidate_outputs.candidate_rows.loc[
+        :,
+        METHODOLOGY_OUTPUT_COLUMNS,
+    ].copy()
+    methodology_review_rows = methodology_rows.loc[
+        methodology_rows["methodology_review_required"]
+    ].reset_index(drop=True)
+    return methodology_rows, methodology_review_rows
+
+
 def _build_internal_supervision_rows(
     *,
     root: Path | None,
     policy: SupervisionPolicy | None,
     taxonomy: TaxonomyContract | None,
+    methodology_contract: MethodologyContract | None,
 ) -> pd.DataFrame:
     project_root = root or ROOT
     supervision_policy = policy or load_supervision_policy(root=project_root)
@@ -120,11 +163,13 @@ def _build_internal_supervision_rows(
         supervision_policy.taxonomy_config,
         root=project_root,
     )
+    methodology = methodology_contract or load_methodology_contract(root=project_root)
     base_rows = _assemble_source_rows(
         supervision_policy.sources,
         root=project_root,
         policy=supervision_policy,
         taxonomy=contract,
+        methodology_contract=methodology,
     )
     return _apply_gold_inclusion_rules(base_rows, policy=supervision_policy)
 
@@ -135,8 +180,11 @@ def _assemble_source_rows(
     root: Path,
     policy: SupervisionPolicy,
     taxonomy: TaxonomyContract,
+    methodology_contract: MethodologyContract,
 ) -> pd.DataFrame:
     records: list[dict[str, object]] = []
+    missing_methodology = build_missing_methodology_assignment(methodology_contract)
+
     for source in sources:
         workbook_path = resolve_project_path(source.workbook_path, root=root)
         frame = pd.read_excel(workbook_path, sheet_name=source.sheet_name)
@@ -149,6 +197,7 @@ def _assemble_source_rows(
         doi_column = _optional_frame_column(columns, source.doi_column)
 
         for row_number, row in enumerate(frame.to_dict(orient="records"), start=2):
+            record_id = f"{source.source_dataset}:{source.sheet_name}:{row_number}"
             title = stringify_label(row.get(title_column)).strip()
             abstract = (
                 stringify_label(row.get(abstract_column)).strip()
@@ -166,12 +215,10 @@ def _assemble_source_rows(
                 taxonomy=taxonomy,
                 policy=policy,
             )
-
             title_normalized = normalize_title(title)
             doi_normalized = normalize_doi(doi)
-            abstract_hash = _abstract_hash(abstract)
             same_article_group = _same_article_group_key(
-                record_id=f"{source.source_dataset}:{source.sheet_name}:{row_number}",
+                record_id=record_id,
                 doi_normalized=doi_normalized,
                 title_normalized=title_normalized,
                 year=year,
@@ -179,7 +226,7 @@ def _assemble_source_rows(
 
             records.append(
                 {
-                    "record_id": f"{source.source_dataset}:{source.sheet_name}:{row_number}",
+                    "record_id": record_id,
                     "source_dataset": source.source_dataset,
                     "source_sheet": source.sheet_name,
                     "title": title,
@@ -195,7 +242,12 @@ def _assemble_source_rows(
                     "include_in_gold": False,
                     "title_normalized": title_normalized,
                     "doi_normalized": doi_normalized,
-                    "abstract_hash": abstract_hash,
+                    "abstract_hash": _abstract_hash(abstract),
+                    "methodology_label": missing_methodology.methodology_label or "",
+                    "methodology_branch": missing_methodology.methodology_branch or "",
+                    "methodology_subtype": missing_methodology.methodology_subtype or "",
+                    "methodology_review_required": missing_methodology.methodology_review_required,
+                    "methodology_review_reason": missing_methodology.methodology_review_reason,
                     "gold_exclusion_reason": "",
                     "same_article_group": same_article_group,
                 }
@@ -260,7 +312,9 @@ def _find_duplicate_conflict_groups(rows: pd.DataFrame) -> set[str]:
     conflict_groups: set[str] = set()
     for group_key, group in eligible.groupby("same_article_group", dropna=False):
         canonical_ids = {
-            value for value in group["canonical_id"].tolist() if isinstance(value, str) and value
+            value
+            for value in group["canonical_id"].tolist()
+            if isinstance(value, str) and value
         }
         if len(canonical_ids) > 1:
             conflict_groups.add(str(group_key))
@@ -335,11 +389,13 @@ def write_candidate_rows(
     root: Path | None = None,
     policy: SupervisionPolicy | None = None,
     taxonomy: TaxonomyContract | None = None,
+    methodology_contract: MethodologyContract | None = None,
 ) -> Path:
     outputs = build_candidate_supervision_outputs(
         root=root,
         policy=policy,
         taxonomy=taxonomy,
+        methodology_contract=methodology_contract,
     )
     return _write_frame(outputs.candidate_rows, output, root=root)
 
@@ -350,11 +406,13 @@ def write_gold_rows(
     root: Path | None = None,
     policy: SupervisionPolicy | None = None,
     taxonomy: TaxonomyContract | None = None,
+    methodology_contract: MethodologyContract | None = None,
 ) -> Path:
     outputs = build_candidate_supervision_outputs(
         root=root,
         policy=policy,
         taxonomy=taxonomy,
+        methodology_contract=methodology_contract,
     )
     return _write_frame(outputs.gold_rows, output, root=root)
 
@@ -365,13 +423,49 @@ def write_excluded_rows(
     root: Path | None = None,
     policy: SupervisionPolicy | None = None,
     taxonomy: TaxonomyContract | None = None,
+    methodology_contract: MethodologyContract | None = None,
 ) -> Path:
     outputs = build_candidate_supervision_outputs(
         root=root,
         policy=policy,
         taxonomy=taxonomy,
+        methodology_contract=methodology_contract,
     )
     return _write_frame(outputs.excluded_rows, output, root=root)
+
+
+def write_methodology_rows(
+    output: str | Path,
+    *,
+    root: Path | None = None,
+    policy: SupervisionPolicy | None = None,
+    taxonomy: TaxonomyContract | None = None,
+    methodology_contract: MethodologyContract | None = None,
+) -> Path:
+    methodology_rows, _ = build_methodology_outputs(
+        root=root,
+        policy=policy,
+        taxonomy=taxonomy,
+        methodology_contract=methodology_contract,
+    )
+    return _write_frame(methodology_rows, output, root=root)
+
+
+def write_methodology_review_rows(
+    output: str | Path,
+    *,
+    root: Path | None = None,
+    policy: SupervisionPolicy | None = None,
+    taxonomy: TaxonomyContract | None = None,
+    methodology_contract: MethodologyContract | None = None,
+) -> Path:
+    _, methodology_review_rows = build_methodology_outputs(
+        root=root,
+        policy=policy,
+        taxonomy=taxonomy,
+        methodology_contract=methodology_contract,
+    )
+    return _write_frame(methodology_review_rows, output, root=root)
 
 
 def _write_frame(frame: pd.DataFrame, output: str | Path, *, root: Path | None) -> Path:

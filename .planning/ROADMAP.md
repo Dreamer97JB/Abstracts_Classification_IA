@@ -11,7 +11,7 @@ This milestone turns the newly delivered client corpora, labeled subsets, and Ar
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Canonical Taxonomy and Corpus Contracts** - Establish script entrypoints, source manifests, overlap rules, and the canonical theory taxonomy.
-- [ ] **Phase 2: Label Harmonization and Reviewed Gold Set Assembly** - Reconcile Seed and `Muestras`, define methodology labels, and produce governed training/evaluation tables.
+- [x] **Phase 2: Label Harmonization and Reviewed Gold Set Assembly** - Reconcile Seed and `Muestras`, define methodology labels, and produce governed training/evaluation tables.
 - [ ] **Phase 3: Baseline Theory Classifier** - Implement the first canonical theory classification path with explicit benchmarks and metrics.
 - [ ] **Phase 4: Methodology and Theme Pipeline** - Add methodology classification and optional theme outputs without polluting the theory contract.
 - [ ] **Phase 5: Full-Corpus Inference and Client Deliverables** - Run inference over the selected corpora and generate review, correlation, and delivery-ready outputs.
@@ -44,9 +44,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Implement legacy-to-canonical label mapping and validation utilities
-- [ ] 02-02: Assemble reviewed theory training/evaluation tables with split and leakage rules
-- [ ] 02-03: Define methodology schema, outlier handling, and review exports
+- [x] 02-01: Implement legacy-to-canonical label mapping and validation utilities
+- [x] 02-02: Assemble reviewed theory training/evaluation tables with split and leakage rules
+- [x] 02-03: Define methodology schema, outlier handling, and review exports
 
 ### Phase 3: Baseline Theory Classifier
 **Goal**: Build the first reproducible classifier for the canonical theory taxonomy and benchmark the agreed text-input variants.
@@ -95,7 +95,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Canonical Taxonomy and Corpus Contracts | 3/3 | Complete | 2026-04-16 |
-| 2. Label Harmonization and Reviewed Gold Set Assembly | 0/3 | Planned | - |
+| 2. Label Harmonization and Reviewed Gold Set Assembly | 3/3 | Complete | 2026-04-16 |
 | 3. Baseline Theory Classifier | 0/2 | Not started | - |
 | 4. Methodology and Theme Pipeline | 0/2 | Not started | - |
 | 5. Full-Corpus Inference and Client Deliverables | 0/2 | Not started | - |
