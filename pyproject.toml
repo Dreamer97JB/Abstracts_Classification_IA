@@ -5,6 +5,12 @@ description = "Refactor base for abstract classification, data auditing, and rep
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
 
+[project.scripts]
+abstract-classifier = "abstract_classifier.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
@@ -14,3 +20,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
