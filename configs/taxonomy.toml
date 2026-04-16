@@ -1,5 +1,5 @@
 version = "1"
-source_of_truth = "Article/Articulo_Arbor.pdf"
+source_of_truth = "Article/Artículo_Arbor.pdf"
 
 [[classes]]
 order = 1

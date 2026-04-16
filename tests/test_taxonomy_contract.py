@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from abstract_classifier.taxonomy import EXPECTED_CLASS_IDS, load_taxonomy, normalize_label
+from abstract_classifier.taxonomy import (
+    EXPECTED_CLASS_IDS,
+    build_taxonomy_inventory,
+    load_taxonomy,
+    normalize_label,
+)
 
 
 def test_taxonomy_config_matches_expected_arbor_order(project_root) -> None:
@@ -62,3 +67,37 @@ def test_unresolved_legacy_labels_require_manual_review(legacy_label: str) -> No
     assert result.canonical_id is None
     assert result.mapping_status == "revision_manual"
     assert result.review_required is True
+
+
+def test_inventory_splits_direct_alias_and_review_required_rows() -> None:
+    inventory = build_taxonomy_inventory()
+
+    assert not inventory.direct_mappings.empty
+    assert not inventory.alias_mappings.empty
+    assert not inventory.review_rows.empty
+    assert set(inventory.alias_mappings["canonical_id"]) == {
+        "tipo_2_realismo_moderado_critico"
+    }
+    assert {"Tipo 6 RF", "No"}.issubset(set(inventory.review_rows["label_original"]))
+
+
+def test_prepare_inventory_command_writes_markdown_report(
+    cli_runner,
+    tmp_path,
+) -> None:
+    output_path = tmp_path / "taxonomy_inventory.md"
+
+    result = cli_runner(
+        "prepare",
+        "--inventory-output",
+        str(output_path),
+    )
+
+    assert result.returncode == 0, result.stderr
+    report_text = output_path.read_text(encoding="utf-8")
+    assert "## Direct mappings" in report_text
+    assert "## Alias mappings" in report_text
+    assert "## Review-required rows" in report_text
+    assert "tipo_2_realismo_moderado_critico" in report_text
+    assert "Tipo 2 RM" in report_text
+    assert "Tipo 6 RF" in report_text
