@@ -10,7 +10,7 @@ This milestone turns the newly delivered client corpora, labeled subsets, and Ar
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Canonical Taxonomy and Corpus Contracts** - Establish script entrypoints, source manifests, overlap rules, and the canonical theory taxonomy.
+- [x] **Phase 1: Canonical Taxonomy and Corpus Contracts** - Establish script entrypoints, source manifests, overlap rules, and the canonical theory taxonomy.
 - [ ] **Phase 2: Label Harmonization and Reviewed Gold Set Assembly** - Reconcile Seed and `Muestras`, define methodology labels, and produce governed training/evaluation tables.
 - [ ] **Phase 3: Baseline Theory Classifier** - Implement the first canonical theory classification path with explicit benchmarks and metrics.
 - [ ] **Phase 4: Methodology and Theme Pipeline** - Add methodology classification and optional theme outputs without polluting the theory contract.
@@ -30,8 +30,8 @@ This milestone turns the newly delivered client corpora, labeled subsets, and Ar
 
 Plans:
 - [x] 01-01: Create package skeleton, config surface, and script entrypoints for the new classification workflow
-- [ ] 01-02: Implement source manifests and overlap audit for Google, Scopus, Seed, and `Muestras`
-- [ ] 01-03: Define canonical theory taxonomy config from the Arbor article and inventory legacy label aliases
+- [x] 01-02: Implement source manifests and overlap audit for Google, Scopus, Seed, and `Muestras`
+- [x] 01-03: Define canonical theory taxonomy config from the Arbor article and inventory legacy label aliases
 
 ### Phase 2: Label Harmonization and Reviewed Gold Set Assembly
 **Goal**: Convert the legacy labeled spreadsheets into a governed supervised dataset with explicit canonical mappings, methodology rules, and review queues.
@@ -94,7 +94,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Canonical Taxonomy and Corpus Contracts | 1/3 | In Progress | 2026-04-16 |
+| 1. Canonical Taxonomy and Corpus Contracts | 3/3 | Complete | 2026-04-16 |
 | 2. Label Harmonization and Reviewed Gold Set Assembly | 0/3 | Not started | - |
 | 3. Baseline Theory Classifier | 0/2 | Not started | - |
 | 4. Methodology and Theme Pipeline | 0/2 | Not started | - |

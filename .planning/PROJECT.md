@@ -18,11 +18,13 @@ Deliver defensible automatic classifications over the client corpus using a cano
 - [x] A GPU-capable WSL ROCm environment is now available for local training experiments on the current machine.
 - [x] The repo now contains real client corpora plus labeled subsets in `Database/` and `Seed/`.
 - [x] The Arbor article in `Article/` defines the six-type theory typology that should anchor semantic label meaning.
+- [x] Phase 01 established `src/abstract_classifier/` as the operational CLI and script surface for `audit`, `prepare`, `train`, `evaluate`, `predict`, and `analyze`.
+- [x] Phase 01 established governed source manifests and strict overlap auditing for Google, Scopus, Seed, and `Muestras`.
+- [x] Phase 01 established the canonical Arbor taxonomy contract plus a review-oriented legacy label inventory.
 
 ### Active
 
-- [ ] Define a canonical theory taxonomy aligned to the Arbor article and reconcile the legacy spreadsheet codes against it.
-- [ ] Consolidate Google, Scopus, Seed, and `Muestras` into a governed corpus with source lineage, overlap control, and reviewable label mappings.
+- [ ] Assemble reviewed theory and methodology gold tables from `Seed` and `Muestras` using the new canonical contracts and explicit review queues.
 - [ ] Build a baseline automatic theory classifier over the available labeled examples, with explicit evaluation and batch inference outputs.
 - [ ] Add methodology classification with the hierarchy `NN` / `no empirico` / `empirico -> cualitativo|cuantitativo`, including outlier handling.
 - [ ] Produce theme and correlation outputs for client analysis without blurring the theory-classification contract.
@@ -37,7 +39,7 @@ Deliver defensible automatic classifications over the client corpus using a cano
 
 ## Context
 
-- The repo is notebook-first and artifact-driven today; `AbstractsV2.ipynb` is still the operational center of gravity.
+- The repo was notebook-first and artifact-driven; Phase 01 introduced `src/abstract_classifier/` so the scripted pipeline is now the operational source of truth while notebooks stay exploratory.
 - Historical outputs already exist in CSV and HTML form and should remain as reference artifacts while the scripted pipeline emerges.
 - The newly added client package changes the project shape: Google Scholar contributes 6,769 rows, Scopus contributes 8,484 rows, and Scopus carries richer metadata through keywords and references.
 - `Seed.xlsx` and Scopus `Muestras` provide labeled examples, but they do not yet form a clean gold standard because label codes and type numbering are inconsistent.
@@ -59,10 +61,10 @@ Deliver defensible automatic classifications over the client corpus using a cano
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Use WSL ROCm as the primary training environment | GPU path is validated there, while Windows GPU execution was not reliable for this repo | - Pending |
-| Use the Arbor article as the semantic source of truth for theory labels | The client provided a concrete six-type typology, so taxonomy meaning should not float across spreadsheets | - Pending |
-| Treat Scopus as the main operational corpus and Google as secondary historical support | Scopus has stronger metadata coverage through keywords and references and contains the `Muestras` subset directly | - Pending |
-| Treat `Seed` and `Muestras` as supervision sources that require canonical remapping first | The label codes are inconsistent and cannot be trusted raw as gold labels | - Pending |
+| Use WSL ROCm as the primary training environment | GPU path is validated there, while Windows GPU execution was not reliable for this repo | Pending - applies in training phases |
+| Use the Arbor article as the semantic source of truth for theory labels | The client provided a concrete six-type typology, so taxonomy meaning should not float across spreadsheets | Validated in Phase 01 via `configs/taxonomy.toml` and `src/abstract_classifier/taxonomy.py` |
+| Treat Scopus as the main operational corpus and Google as secondary historical support | Scopus has stronger metadata coverage through keywords and references and contains the `Muestras` subset directly | Operationalized in Phase 01 manifests and overlap tie-break rules |
+| Treat `Seed` and `Muestras` as supervision sources that require canonical remapping first | The label codes are inconsistent and cannot be trusted raw as gold labels | Validated in Phase 01 taxonomy inventory and review-required mapping statuses |
 | Model methodology separately with a hierarchy and explicit outlier handling | The client notes define methodology as a separate decision chain, not a side effect of theory labeling | - Pending |
 | Keep themes and correlation outputs secondary to the theory classifier contract | The client wants them, but they should consume a stable classified corpus rather than define the main label logic | - Pending |
 
@@ -94,4 +96,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-02 after re-scoping v1.0 around the new client datasets and Arbor taxonomy*
+*Last updated: 2026-04-16 after completing Phase 01 and advancing to Phase 2*

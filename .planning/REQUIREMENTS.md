@@ -12,13 +12,13 @@
 
 ### Corpus and Source Governance
 
-- [ ] **CORP-01**: Analyst can ingest Google, Scopus, Seed, and `Muestras` into normalized tables while preserving workbook, sheet, and source-corpus lineage.
-- [ ] **CORP-02**: Analyst can generate an overlap and duplicate report across corpora using title and DOI matching before training or full-corpus inference.
+- [x] **CORP-01**: Analyst can ingest Google, Scopus, Seed, and `Muestras` into normalized tables while preserving workbook, sheet, and source-corpus lineage.
+- [x] **CORP-02**: Analyst can generate an overlap and duplicate report across corpora using title and DOI matching before training or full-corpus inference.
 - [ ] **CORP-03**: Analyst can choose which corpora feed training, evaluation, and inference through config instead of notebook edits.
 
 ### Taxonomy and Label Governance
 
-- [ ] **TAXO-01**: Analyst can define a canonical theory taxonomy aligned to the six types in the Arbor article.
+- [x] **TAXO-01**: Analyst can define a canonical theory taxonomy aligned to the six types in the Arbor article.
 - [ ] **TAXO-02**: Analyst can map legacy spreadsheet labels from Seed and `Muestras` into the canonical taxonomy through versioned config files.
 - [ ] **TAXO-03**: Analyst can detect and export inconsistent, blank, or unmapped labels for manual review before training.
 
@@ -85,9 +85,9 @@
 |-------------|-------|--------|
 | OPS-01 | Phase 1 | Complete |
 | OPS-02 | Phase 1 | Complete |
-| CORP-01 | Phase 1 | Pending |
-| CORP-02 | Phase 1 | Pending |
-| TAXO-01 | Phase 1 | Pending |
+| CORP-01 | Phase 1 | Complete |
+| CORP-02 | Phase 1 | Complete |
+| TAXO-01 | Phase 1 | Complete |
 | CORP-03 | Phase 2 | Pending |
 | TAXO-02 | Phase 2 | Pending |
 | TAXO-03 | Phase 2 | Pending |
@@ -113,4 +113,4 @@
 
 ---
 *Requirements defined: 2026-04-02*
-*Last updated: 2026-04-02 after re-scoping the milestone around the new client datasets*
+*Last updated: 2026-04-16 after completing Phase 1 corpus governance and taxonomy contracts*
