@@ -1,195 +1,288 @@
 from __future__ import annotations
 
 import argparse
-import csv
-import statistics
 from collections import Counter
 from pathlib import Path
 from typing import Sequence
 
+import pandas as pd
+
+from ..contracts import NormalizedSourceRow, SourceManifest
+from ..io import load_normalized_rows, load_source_manifest
+from ..overlap import OverlapDecision, OverlapOutcome, build_overlap_decisions
+
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_OUTPUT = Path("reports/data_audit.md")
+DEFAULT_SOURCES_CONFIG = Path("configs/sources.toml")
+STATUS_ORDER = (
+    OverlapOutcome.MERGE_DOI,
+    OverlapOutcome.MERGE_TITLE_YEAR,
+    OverlapOutcome.MANUAL_REVIEW,
+)
+NORMALIZED_COLUMNS = [
+    "record_id",
+    "row_number",
+    "source_dataset",
+    "source_sheet",
+    "source_path",
+    "source_role",
+    "source_system",
+    "title",
+    "authors",
+    "doi",
+    "abstract",
+    "journal",
+    "author_keywords",
+    "index_keywords",
+    "references",
+    "label_original",
+    "year",
+    "title_normalized",
+    "doi_normalized",
+]
+DECISION_COLUMNS = [
+    "outcome",
+    "left_record_id",
+    "left_source_dataset",
+    "left_source_sheet",
+    "left_source_path",
+    "left_source_role",
+    "left_title",
+    "left_year",
+    "left_doi_normalized",
+    "left_title_normalized",
+    "left_completeness_score",
+    "right_record_id",
+    "right_source_dataset",
+    "right_source_sheet",
+    "right_source_path",
+    "right_source_role",
+    "right_title",
+    "right_year",
+    "right_doi_normalized",
+    "right_title_normalized",
+    "right_completeness_score",
+    "winner_record_id",
+    "winner_source_dataset",
+    "selection_reason",
+]
 
 
-def read_csv_rows(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        return list(csv.DictReader(handle))
-
-
-def safe_float(value: str | None) -> float | None:
-    if value is None:
-        return None
-    value = value.strip()
-    if not value:
-        return None
-    try:
-        return float(value)
-    except ValueError:
-        return None
-
-
-def length_stats(values: list[str]) -> str:
-    if not values:
-        return "n/a"
-    lengths = [len(value) for value in values]
-    return (
-        f"min={min(lengths)}, "
-        f"avg={statistics.mean(lengths):.1f}, "
-        f"max={max(lengths)}"
-    )
-
-
-def counter_lines(counter: Counter[str], top_n: int | None = None) -> list[str]:
-    items = counter.most_common(top_n)
-    return [f"- `{label}`: `{count}`" for label, count in items]
-
-
-def build_report(root: Path | None = None) -> str:
-    project_root = root or ROOT
-
-    lines: list[str] = []
-    lines.append("# Data Audit")
-    lines.append("")
-    lines.append(f"Root: `{project_root}`")
-    lines.append("")
-
-    seed_labeled = project_root / "seed_labeled.csv"
-    seed_generated = project_root / "seed_generated.csv"
-    cleaned = project_root / "abstracs_cleaned.csv"
-    final_csv = project_root / "abstracts_con_metodologia_optimizado.csv"
-
-    if seed_labeled.exists():
-        rows = read_csv_rows(seed_labeled)
-        labels = Counter(row.get("label_text", "").strip() for row in rows)
-        texts = [row.get("text", "") for row in rows]
-        lines.append("## Seed labeled")
-        lines.append("")
-        lines.append(f"- rows: `{len(rows)}`")
-        lines.append(f"- unique texts: `{len(set(texts))}`")
-        lines.append(f"- text length stats: `{length_stats(texts)}`")
-        lines.extend(counter_lines(labels))
-        lines.append("")
-
-    if seed_generated.exists():
-        rows = read_csv_rows(seed_generated)
-        labels = Counter(row.get("label_text", "").strip() for row in rows)
-        texts = [row.get("text", "") for row in rows]
-        unique_texts = len(set(texts))
-        lines.append("## Seed generated")
-        lines.append("")
-        lines.append(f"- rows: `{len(rows)}`")
-        lines.append(f"- unique texts: `{unique_texts}`")
-        lines.append(f"- duplicate texts: `{len(rows) - unique_texts}`")
-        lines.append(f"- text length stats: `{length_stats(texts)}`")
-        lines.extend(counter_lines(labels))
-        lines.append("")
-
-    if cleaned.exists():
-        rows = read_csv_rows(cleaned)
-        abstracts = [
-            row.get("Abstract", "")
-            for row in rows
-            if row.get("Abstract", "").strip()
-        ]
-        missing_abstract = sum(
-            1 for row in rows if not row.get("Abstract", "").strip()
-        )
-        missing_title = sum(
-            1 for row in rows if not row.get("Title", "").strip()
-        )
-        year_zero = sum(
-            1 for row in rows if row.get("Year", "").strip() == "0"
-        )
-        year_blank = sum(
-            1 for row in rows if not row.get("Year", "").strip()
-        )
-        lines.append("## Cleaned dataset")
-        lines.append("")
-        lines.append(f"- rows: `{len(rows)}`")
-        lines.append(f"- missing abstract: `{missing_abstract}`")
-        lines.append(f"- missing title: `{missing_title}`")
-        lines.append(f"- year == 0: `{year_zero}`")
-        lines.append(f"- blank year: `{year_blank}`")
-        lines.append(f"- abstract length stats: `{length_stats(abstracts)}`")
-        lines.append("")
-
-    if final_csv.exists():
-        rows = read_csv_rows(final_csv)
-        stance = Counter(row.get("Predicted_Label", "").strip() for row in rows)
-        methodology = Counter(row.get("Methodology", "").strip() for row in rows)
-        topics = Counter(row.get("Topic_Label", "").strip() for row in rows)
-        confidences = [
-            value
-            for row in rows
-            if (value := safe_float(row.get("Confidence"))) is not None
-        ]
-        lines.append("## Final enriched output")
-        lines.append("")
-        lines.append(f"- rows: `{len(rows)}`")
-        if confidences:
-            lines.append(f"- confidence min: `{min(confidences):.4f}`")
-            lines.append(
-                f"- confidence avg: `{statistics.mean(confidences):.4f}`"
-            )
-            lines.append(f"- confidence max: `{max(confidences):.4f}`")
-            lines.append(
-                f"- confidence >= 0.8: `{sum(1 for value in confidences if value >= 0.8)}`"
-            )
-        lines.append("")
-        lines.append("### Predicted label distribution")
-        lines.extend(counter_lines(stance))
-        lines.append("")
-        lines.append("### Methodology distribution")
-        lines.extend(counter_lines(methodology))
-        lines.append("")
-        lines.append("### Top topic labels")
-        lines.extend(counter_lines(topics, top_n=15))
-        lines.append("")
-
-    return "\n".join(lines).rstrip() + "\n"
-
-
-def write_report(output: str | Path = DEFAULT_OUTPUT, root: Path | None = None) -> Path:
-    project_root = root or ROOT
+def resolve_output_path(output: str | Path, *, root: Path = ROOT) -> Path:
     output_path = Path(output)
     if not output_path.is_absolute():
-        output_path = project_root / output_path
-    output_path = output_path.resolve()
+        output_path = root / output_path
+    return output_path.resolve()
 
-    report = build_report(project_root)
+
+def resolve_structured_dir(
+    output_path: Path,
+    structured_dir: str | Path | None,
+    *,
+    root: Path = ROOT,
+) -> Path:
+    if structured_dir is None:
+        return output_path.with_name(f"{output_path.stem}_tables")
+
+    path = Path(structured_dir)
+    if not path.is_absolute():
+        path = root / path
+    return path.resolve()
+
+
+def run_audit(
+    *,
+    source_config_path: Path,
+    root: Path = ROOT,
+) -> tuple[SourceManifest, list[NormalizedSourceRow], list[OverlapDecision]]:
+    manifest = load_source_manifest(source_config_path)
+    rows = load_normalized_rows(source_config_path, project_root=root)
+    decisions = build_overlap_decisions(rows)
+    return manifest, rows, decisions
+
+
+def write_structured_outputs(
+    rows: list[NormalizedSourceRow],
+    decisions: list[OverlapDecision],
+    *,
+    output_dir: Path,
+) -> dict[str, Path]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    paths: dict[str, Path] = {}
+
+    normalized_path = output_dir / "normalized_rows.csv"
+    _write_csv(
+        normalized_path,
+        [row.to_dict() for row in rows],
+        columns=NORMALIZED_COLUMNS,
+    )
+    paths["normalized_rows"] = normalized_path
+
+    for outcome in STATUS_ORDER:
+        status_path = output_dir / f"{outcome.value}.csv"
+        _write_csv(
+            status_path,
+            [decision.to_dict() for decision in decisions if decision.outcome == outcome],
+            columns=DECISION_COLUMNS,
+        )
+        paths[outcome.value] = status_path
+
+    return paths
+
+
+def build_report(
+    *,
+    manifest: SourceManifest,
+    source_config_path: Path,
+    rows: list[NormalizedSourceRow],
+    decisions: list[OverlapDecision],
+    structured_paths: dict[str, Path],
+    root: Path = ROOT,
+) -> str:
+    lines: list[str] = ["# Data Audit", ""]
+    lines.append(f"Source config: `{_display_path(source_config_path, root)}`")
+    lines.append(f"Governed sources: `{len(manifest.sources)}`")
+    lines.append(f"Normalized rows: `{len(rows)}`")
+    lines.append("")
+
+    lines.append("## Source Coverage")
+    lines.append("")
+    lines.append("| Dataset | Role | Sheet | Rows | Path |")
+    lines.append("| --- | --- | --- | ---: | --- |")
+
+    counts = Counter((row.source_dataset, row.source_sheet or "") for row in rows)
+    for source in manifest.sources:
+        key = (source.source_dataset, source.sheet or "")
+        lines.append(
+            "| "
+            + " | ".join(
+                (
+                    source.source_dataset,
+                    source.role.value,
+                    source.sheet or "",
+                    str(counts.get(key, 0)),
+                    source.path,
+                )
+            )
+            + " |"
+        )
+    lines.append("")
+
+    lines.append("## Overlap Outcomes")
+    lines.append("")
+    outcome_counts = Counter(decision.outcome.value for decision in decisions)
+    for outcome in STATUS_ORDER:
+        lines.append(f"- `{outcome.value}`: `{outcome_counts.get(outcome.value, 0)}`")
+    lines.append("")
+
+    lines.append("## Structured Outputs")
+    lines.append("")
+    for name in ("normalized_rows", *(outcome.value for outcome in STATUS_ORDER)):
+        lines.append(
+            f"- `{name}`: `{_display_path(structured_paths[name], root)}`"
+        )
+    lines.append("")
+
+    return "\n".join(lines)
+
+
+def write_report(
+    *,
+    source_config_path: str | Path = DEFAULT_SOURCES_CONFIG,
+    output: str | Path = DEFAULT_OUTPUT,
+    structured_dir: str | Path | None = None,
+    root: Path = ROOT,
+) -> tuple[Path, dict[str, Path]]:
+    source_config = resolve_output_path(source_config_path, root=root)
+    output_path = resolve_output_path(output, root=root)
+    structured_output_dir = resolve_structured_dir(output_path, structured_dir, root=root)
+
+    manifest, rows, decisions = run_audit(source_config_path=source_config, root=root)
+    structured_paths = write_structured_outputs(
+        rows,
+        decisions,
+        output_dir=structured_output_dir,
+    )
+    report = build_report(
+        manifest=manifest,
+        source_config_path=source_config,
+        rows=rows,
+        decisions=decisions,
+        structured_paths=structured_paths,
+        root=root,
+    )
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(report, encoding="utf-8")
-    return output_path
+    return output_path, structured_paths
 
 
 def handle_command(args: argparse.Namespace) -> int:
-    output_path = write_report(args.output, root=ROOT)
+    output_path, structured_paths = write_report(
+        source_config_path=args.sources_config,
+        output=args.output,
+        structured_dir=args.structured_dir,
+        root=ROOT,
+    )
     print(f"Report generated at: {output_path}")
+    print(f"Structured outputs written to: {structured_paths['normalized_rows'].parent}")
     return 0
 
 
 def register(subparsers) -> None:
     parser = subparsers.add_parser(
         "audit",
-        help="Audit the current project CSV artifacts.",
-        description="Generate a Markdown audit report for the current dataset artifacts.",
+        help="Audit governed workbook sources and overlap outcomes.",
+        description="Generate a Markdown audit report and overlap review tables from governed sources.",
     )
     parser.add_argument(
         "--output",
         default=str(DEFAULT_OUTPUT),
         help="Output path for the Markdown report.",
+    )
+    parser.add_argument(
+        "--sources-config",
+        default=str(DEFAULT_SOURCES_CONFIG),
+        help="Path to the governed source manifest TOML file.",
+    )
+    parser.add_argument(
+        "--structured-dir",
+        default=None,
+        help="Optional directory for the structured CSV outputs.",
     )
     parser.set_defaults(handler=handle_command)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Audit the main CSV artifacts in the project."
+        description="Audit governed workbook sources and overlap outcomes."
     )
     parser.add_argument(
         "--output",
         default=str(DEFAULT_OUTPUT),
         help="Output path for the Markdown report.",
     )
+    parser.add_argument(
+        "--sources-config",
+        default=str(DEFAULT_SOURCES_CONFIG),
+        help="Path to the governed source manifest TOML file.",
+    )
+    parser.add_argument(
+        "--structured-dir",
+        default=None,
+        help="Optional directory for the structured CSV outputs.",
+    )
     args = parser.parse_args(argv)
     return handle_command(args)
+
+
+def _display_path(path: Path, root: Path) -> str:
+    try:
+        return str(path.relative_to(root))
+    except ValueError:
+        return str(path)
+
+
+def _write_csv(path: Path, rows: list[dict[str, object]], *, columns: list[str]) -> None:
+    frame = pd.DataFrame(rows, columns=columns)
+    frame.to_csv(path, index=False)

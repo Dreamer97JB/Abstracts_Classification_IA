@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from abstract_classifier.contracts import NormalizedSourceRow
+from abstract_classifier.commands.audit import write_structured_outputs
 from abstract_classifier.overlap import (
     OverlapOutcome,
+    OverlapDecision,
     build_overlap_decisions,
     classify_overlap,
     select_winner,
@@ -222,3 +226,43 @@ def test_build_overlap_decisions_tracks_all_review_statuses() -> None:
         OverlapOutcome.MERGE_TITLE_YEAR,
         OverlapOutcome.MANUAL_REVIEW,
     }
+
+
+def test_write_structured_outputs_creates_status_tables(tmp_path: Path) -> None:
+    left = make_row(
+        record_id="google:9",
+        source_dataset="google_corpus",
+        source_system="google_scholar",
+        title="Exact DOI left",
+        title_normalized="exact doi left",
+        year=2020,
+        doi_normalized="10.1000/doi",
+    )
+    right = make_row(
+        record_id="scopus:9",
+        source_dataset="scopus_base",
+        source_system="scopus",
+        title="Exact DOI right",
+        title_normalized="exact doi right",
+        year=2020,
+        doi_normalized="10.1000/doi",
+        references="Ref A",
+    )
+    winner, selection_reason, left_score, right_score = select_winner(left, right)
+    decision = OverlapDecision(
+        outcome=OverlapOutcome.MERGE_DOI,
+        left=left,
+        right=right,
+        winner=winner,
+        left_completeness_score=left_score,
+        right_completeness_score=right_score,
+        selection_reason=selection_reason,
+    )
+
+    paths = write_structured_outputs([left, right], [decision], output_dir=tmp_path)
+
+    assert paths["normalized_rows"].exists()
+    assert paths["merge_doi"].exists()
+    assert paths["merge_title_year"].exists()
+    assert paths["manual_review"].exists()
+    assert "outcome" in paths["merge_doi"].read_text(encoding="utf-8")
