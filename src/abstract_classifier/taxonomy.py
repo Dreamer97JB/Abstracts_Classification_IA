@@ -87,11 +87,27 @@ class RoutingBuckets:
 
 
 @dataclass(frozen=True)
+class QualityPolicy:
+    min_abstract_words: int
+
+
+@dataclass(frozen=True)
+class SplitPolicy:
+    version: str
+    seed: int
+    train_ratio: float
+    val_ratio: float
+    test_ratio: float
+
+
+@dataclass(frozen=True)
 class SupervisionPolicy:
     version: str
     taxonomy_config: str
     default_gold_source: str
     routing: RoutingBuckets
+    quality: QualityPolicy
+    split_defaults: SplitPolicy
     sources: tuple[SupervisedSource, ...]
     theory_mappings: tuple[TheoryMappingRule, ...]
 
@@ -227,6 +243,36 @@ def load_supervision_policy(
     ):
         raise ValueError("Supervision routing buckets must all be configured.")
 
+    quality_data = data.get("quality", {})
+    quality = QualityPolicy(
+        min_abstract_words=int(quality_data.get("min_abstract_words", 0))
+    )
+    if quality.min_abstract_words <= 0:
+        raise ValueError("Supervision quality.min_abstract_words must be positive.")
+
+    split_data = data.get("split_defaults", {})
+    split_defaults = SplitPolicy(
+        version=str(split_data.get("version", "")),
+        seed=int(split_data.get("seed", 0)),
+        train_ratio=float(split_data.get("train_ratio", 0.0)),
+        val_ratio=float(split_data.get("val_ratio", 0.0)),
+        test_ratio=float(split_data.get("test_ratio", 0.0)),
+    )
+    ratio_total = (
+        split_defaults.train_ratio
+        + split_defaults.val_ratio
+        + split_defaults.test_ratio
+    )
+    if (
+        not split_defaults.version
+        or split_defaults.seed <= 0
+        or abs(ratio_total - 1.0) > 1e-9
+    ):
+        raise ValueError(
+            "Supervision split defaults must declare version, positive seed, "
+            "and ratios summing to 1.0."
+        )
+
     raw_sources = data.get("sources", [])
     if not raw_sources:
         raise ValueError("Supervision policy must declare supervised sources.")
@@ -268,6 +314,8 @@ def load_supervision_policy(
         taxonomy_config=str(data.get("taxonomy_config", DEFAULT_TAXONOMY_CONFIG)),
         default_gold_source=str(data.get("default_gold_source", "")),
         routing=routing,
+        quality=quality,
+        split_defaults=split_defaults,
         sources=sources,
         theory_mappings=theory_mappings,
     )

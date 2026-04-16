@@ -15,6 +15,9 @@ def test_supervision_policy_loads_candidate_sources_and_routing(
     assert policy.routing.training_default_bucket == "candidate_gold"
     assert policy.routing.evaluation_default_bucket == "manual_review"
     assert policy.routing.inference_default_bucket == "not_for_inference"
+    assert policy.quality.min_abstract_words == 20
+    assert policy.split_defaults.version == "phase2_v1"
+    assert policy.split_defaults.seed == 20260416
 
     by_name = {source.name: source for source in policy.sources}
     assert set(by_name) == {"seed", "muestras"}

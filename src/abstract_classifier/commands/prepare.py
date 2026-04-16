@@ -3,7 +3,15 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ..supervision import write_theory_mapping_rows, write_theory_review_rows
+from ..splits import write_split_assignments
+from ..supervision import (
+    build_candidate_supervision_outputs,
+    write_candidate_rows,
+    write_excluded_rows,
+    write_gold_rows,
+    write_theory_mapping_rows,
+    write_theory_review_rows,
+)
 from ..taxonomy import (
     DEFAULT_SUPERVISION_CONFIG,
     DEFAULT_TAXONOMY_CONFIG,
@@ -49,6 +57,55 @@ def handle_command(args: argparse.Namespace) -> int:
         )
         print(f"Theory review rows generated at: {theory_review_path}")
 
+    candidate_outputs = None
+    if args.candidate_output:
+        candidate_path = write_candidate_rows(
+            args.candidate_output,
+            root=ROOT,
+            policy=supervision_policy,
+            taxonomy=taxonomy,
+        )
+        print(f"Candidate supervision rows generated at: {candidate_path}")
+    if args.gold_output or args.excluded_output or args.split_output:
+        candidate_outputs = build_candidate_supervision_outputs(
+            root=ROOT,
+            policy=supervision_policy,
+            taxonomy=taxonomy,
+        )
+
+    if args.gold_output:
+        gold_path = write_gold_rows(
+            args.gold_output,
+            root=ROOT,
+            policy=supervision_policy,
+            taxonomy=taxonomy,
+        )
+        print(f"Gold supervision rows generated at: {gold_path}")
+
+    if args.excluded_output:
+        excluded_path = write_excluded_rows(
+            args.excluded_output,
+            root=ROOT,
+            policy=supervision_policy,
+            taxonomy=taxonomy,
+        )
+        print(f"Excluded supervision rows generated at: {excluded_path}")
+
+    if args.split_output:
+        if candidate_outputs is None:
+            candidate_outputs = build_candidate_supervision_outputs(
+                root=ROOT,
+                policy=supervision_policy,
+                taxonomy=taxonomy,
+            )
+        split_path = write_split_assignments(
+            candidate_outputs.candidate_rows,
+            args.split_output,
+            root=ROOT,
+            policy=supervision_policy,
+        )
+        print(f"Split assignments generated at: {split_path}")
+
     return 0
 
 
@@ -80,5 +137,21 @@ def register(subparsers) -> None:
     parser.add_argument(
         "--theory-review-output",
         help="Optional output path for unresolved theory review CSV rows.",
+    )
+    parser.add_argument(
+        "--candidate-output",
+        help="Optional output path for the candidate supervision CSV.",
+    )
+    parser.add_argument(
+        "--gold-output",
+        help="Optional output path for the gold supervision CSV.",
+    )
+    parser.add_argument(
+        "--excluded-output",
+        help="Optional output path for excluded supervision rows.",
+    )
+    parser.add_argument(
+        "--split-output",
+        help="Optional output path for split assignment CSV rows.",
     )
     parser.set_defaults(handler=handle_command)

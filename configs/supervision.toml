@@ -7,6 +7,16 @@ training_default_bucket = "candidate_gold"
 evaluation_default_bucket = "manual_review"
 inference_default_bucket = "not_for_inference"
 
+[quality]
+min_abstract_words = 20
+
+[split_defaults]
+version = "phase2_v1"
+seed = 20260416
+train_ratio = 0.70
+val_ratio = 0.15
+test_ratio = 0.15
+
 [[sources]]
 name = "seed"
 source_dataset = "seed"
