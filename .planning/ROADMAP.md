@@ -95,7 +95,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Canonical Taxonomy and Corpus Contracts | 3/3 | Complete | 2026-04-16 |
-| 2. Label Harmonization and Reviewed Gold Set Assembly | 0/3 | Not started | - |
+| 2. Label Harmonization and Reviewed Gold Set Assembly | 0/3 | Planned | - |
 | 3. Baseline Theory Classifier | 0/2 | Not started | - |
 | 4. Methodology and Theme Pipeline | 0/2 | Not started | - |
 | 5. Full-Corpus Inference and Client Deliverables | 0/2 | Not started | - |
