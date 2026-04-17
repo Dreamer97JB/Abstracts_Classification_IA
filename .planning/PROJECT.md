@@ -21,13 +21,14 @@ Deliver defensible automatic classifications over the client corpus using a cano
 - [x] Phase 01 established `src/abstract_classifier/` as the operational CLI and script surface for `audit`, `prepare`, `train`, `evaluate`, `predict`, and `analyze`.
 - [x] Phase 01 established governed source manifests and strict overlap auditing for Google, Scopus, Seed, and `Muestras`.
 - [x] Phase 01 established the canonical Arbor taxonomy contract plus a review-oriented legacy label inventory.
+- [x] Phase 02 assembled governed theory gold tables, methodology review outputs, and the fixed `phase2_v1` split from `Seed` and `Muestras`.
+- [x] Phase 03 replaced the placeholder theory `train` and `evaluate` commands with a reproducible baseline classifier workflow plus explicit text-variant benchmarking.
 
 ### Active
 
-- [ ] Assemble reviewed theory and methodology gold tables from `Seed` and `Muestras` using the new canonical contracts and explicit review queues.
-- [ ] Build a baseline automatic theory classifier over the available labeled examples, with explicit evaluation and batch inference outputs.
 - [ ] Add methodology classification with the hierarchy `NN` / `no empirico` / `empirico -> cualitativo|cuantitativo`, including outlier handling.
 - [ ] Produce theme and correlation outputs for client analysis without blurring the theory-classification contract.
+- [ ] Extend the governed theory path from labeled-split evaluation to full-corpus batch inference, confidence review exports, and client-ready outputs.
 
 ### Out of Scope
 
@@ -46,6 +47,7 @@ Deliver defensible automatic classifications over the client corpus using a cano
 - The Arbor article explicitly defines six theory types: realismo fuerte, realismo moderado / critico, antirrealismo epistemologico, pragmatismo epistemologico, constructivismo moderado, and constructivismo fuerte / relativismo.
 - The machine now has a validated WSL2 + Ubuntu 24.04 + ROCm path with AMD Radeon RX 9070 support for PyTorch workloads.
 - The client also wants methodology, themes, and correlation-style outputs, so the milestone must separate core classification from secondary analysis.
+- Phase 03 now provides the first script-driven theory baseline with persisted manifests, metrics, predictions, and `abstract_only` versus `abstract_plus_keywords` comparison artifacts under `reports/tmp_phase3/`.
 - Detailed evidence from the new files is captured in `.planning/research/CLIENT_SCOPE_2026-04-02.md`.
 
 ## Constraints
@@ -96,4 +98,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-16 after completing Phase 01 and advancing to Phase 2*
+*Last updated: 2026-04-16 after completing Phase 3 and advancing toward Phase 4*

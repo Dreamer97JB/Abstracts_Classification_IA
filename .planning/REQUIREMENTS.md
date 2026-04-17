@@ -24,13 +24,13 @@
 
 ### Theory Classification
 
-- [ ] **THEO-01**: Analyst can train and evaluate a baseline automatic classifier for the canonical theory taxonomy using the available labeled examples.
+- [x] **THEO-01**: Analyst can train and evaluate a baseline automatic classifier for the canonical theory taxonomy using the available labeled examples.
 - [ ] **THEO-02**: Analyst can run batch theory classification over a chosen corpus and receive predicted canonical label, confidence, model version, run identifier, and lineage columns.
-- [ ] **THEO-03**: Analyst can choose between abstract-only and abstract-plus-keywords input variants through config so enrichment can be benchmarked explicitly.
+- [x] **THEO-03**: Analyst can choose between abstract-only and abstract-plus-keywords input variants through config so enrichment can be benchmarked explicitly.
 
 ### Evaluation
 
-- [ ] **EVAL-01**: Analyst can generate a theory metrics bundle with accuracy, macro F1, weighted F1, confusion matrix, and per-class performance for a labeled split.
+- [x] **EVAL-01**: Analyst can generate a theory metrics bundle with accuracy, macro F1, weighted F1, confusion matrix, and per-class performance for a labeled split.
 - [ ] **EVAL-02**: Analyst can generate a methodology metrics bundle when reviewed methodology labels are available.
 - [ ] **EVAL-03**: Analyst can export low-confidence and taxonomy-conflict cases using configurable thresholds and review rules.
 
@@ -94,9 +94,9 @@
 | METH-01 | Phase 2 | Pending |
 | METH-02 | Phase 2 | Pending |
 | METH-03 | Phase 2 | Pending |
-| THEO-01 | Phase 3 | Pending |
-| THEO-03 | Phase 3 | Pending |
-| EVAL-01 | Phase 3 | Pending |
+| THEO-01 | Phase 3 | Complete |
+| THEO-03 | Phase 3 | Complete |
+| EVAL-01 | Phase 3 | Complete |
 | EVAL-02 | Phase 4 | Pending |
 | ANLY-01 | Phase 4 | Pending |
 | THEO-02 | Phase 5 | Pending |
@@ -113,4 +113,4 @@
 
 ---
 *Requirements defined: 2026-04-02*
-*Last updated: 2026-04-16 after completing Phase 1 corpus governance and taxonomy contracts*
+*Last updated: 2026-04-16 after completing Phase 3 baseline classifier execution*

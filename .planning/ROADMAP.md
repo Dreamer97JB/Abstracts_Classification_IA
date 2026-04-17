@@ -12,7 +12,7 @@ This milestone turns the newly delivered client corpora, labeled subsets, and Ar
 
 - [x] **Phase 1: Canonical Taxonomy and Corpus Contracts** - Establish script entrypoints, source manifests, overlap rules, and the canonical theory taxonomy.
 - [x] **Phase 2: Label Harmonization and Reviewed Gold Set Assembly** - Reconcile Seed and `Muestras`, define methodology labels, and produce governed training/evaluation tables.
-- [ ] **Phase 3: Baseline Theory Classifier** - Implement the first canonical theory classification path with explicit benchmarks and metrics.
+- [x] **Phase 3: Baseline Theory Classifier** - Implement the first canonical theory classification path with explicit benchmarks and metrics.
 - [ ] **Phase 4: Methodology and Theme Pipeline** - Add methodology classification and optional theme outputs without polluting the theory contract.
 - [ ] **Phase 5: Full-Corpus Inference and Client Deliverables** - Run inference over the selected corpora and generate review, correlation, and delivery-ready outputs.
 
@@ -59,8 +59,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Implement canonical theory training and evaluation flow with artifact persistence
-- [ ] 03-02: Benchmark agreed input variants and persist comparable experiment outputs
+- [x] 03-01: Implement canonical theory training and evaluation flow with artifact persistence
+- [x] 03-02: Benchmark agreed input variants and persist comparable experiment outputs
 
 ### Phase 4: Methodology and Theme Pipeline
 **Goal**: Add the secondary analytical outputs the client asked for while keeping them structurally separate from the theory label contract.
@@ -96,9 +96,9 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Canonical Taxonomy and Corpus Contracts | 3/3 | Complete | 2026-04-16 |
 | 2. Label Harmonization and Reviewed Gold Set Assembly | 3/3 | Complete | 2026-04-16 |
-| 3. Baseline Theory Classifier | 0/2 | Not started | - |
+| 3. Baseline Theory Classifier | 2/2 | Complete | 2026-04-16 |
 | 4. Methodology and Theme Pipeline | 0/2 | Not started | - |
 | 5. Full-Corpus Inference and Client Deliverables | 0/2 | Not started | - |
 
 ---
-*Roadmap updated: 2026-04-16 for milestone v1.0 Taxonomia Arbor y Clasificacion Cliente*
+*Roadmap updated: 2026-04-16 after completing Phase 3 baseline theory classifier execution*
