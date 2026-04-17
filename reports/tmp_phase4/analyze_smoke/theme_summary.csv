@@ -1,0 +1,374 @@
+theme_label,theme_source,record_count,assignment_count
+science,tfidf,12,12
+sociology,tfidf,8,8
+sociology science,tfidf,7,7
+philosophy,tfidf,5,5
+sts,tfidf,5,5
+actor-network theory,keyword,3,3
+education,tfidf,3,3
+funding,tfidf,3,3
+governance,tfidf,3,3
+pandemic,tfidf,3,3
+religion,tfidf,3,3
+science education,tfidf,3,3
+science studies,tfidf,3,3
+scientific,tfidf,3,3
+thinking,tfidf,3,3
+1990s,tfidf,2,2
+2018,tfidf,2,2
+academic,tfidf,2,2
+anthropology of science,keyword,2,2
+authors,tfidf,2,2
+beliefs,tfidf,2,2
+bloor,tfidf,2,2
+care,tfidf,2,2
+categories,tfidf,2,2
+collaboration,tfidf,2,2
+communication,tfidf,2,2
+countries,tfidf,2,2
+course,tfidf,2,2
+covid 19,tfidf,2,2
+cultural studies,keyword,2,2
+data,tfidf,2,2
+democracy,keyword,2,2
+digital,tfidf,2,2
+digital humanities,keyword,2,2
+discovery,tfidf,2,2
+ethnography,keyword,2,2
+experts,tfidf,2,2
+future,tfidf,2,2
+history,tfidf,2,2
+industry,tfidf,2,2
+information,tfidf,2,2
+logic,tfidf,2,2
+methods,tfidf,2,2
+migration management,keyword,2,2
+new,tfidf,2,2
+norms,tfidf,2,2
+number,tfidf,2,2
+problem,tfidf,2,2
+programme,tfidf,2,2
+public,tfidf,2,2
+religious,tfidf,2,2
+science religion,tfidf,2,2
+science technology,tfidf,2,2
+shaping,tfidf,2,2
+social,tfidf,2,2
+society,tfidf,2,2
+strong programme,tfidf,2,2
+studies science,tfidf,2,2
+technology,tfidf,2,2
+weber,tfidf,2,2
+work,tfidf,2,2
+acceleration,keyword,1,1
+accountability labor,keyword,1,1
+addiction,keyword,1,1
+addressing,tfidf,1,1
+advocacy,keyword,1,1
+affordance,keyword,1,1
+agile project management,keyword,1,1
+agriculture,keyword,1,1
+alcohol,keyword,1,1
+analytical tool,keyword,1,1
+anatomy artistic,keyword,1,1
+animal,tfidf,1,1
+annemarie mol and john law,keyword,1,1
+ant,keyword,1,1
+anthropology and sociology of science,keyword,1,1
+anti-history,keyword,1,1
+anti-science,keyword,1,1
+argument,tfidf,1,1
+argument of pessimistic induction,keyword,1,1
+art,tfidf,1,1
+arts,tfidf,1,1
+assemblages,keyword,1,1
+attempts,tfidf,1,1
+australia,keyword,1,1
+authorship,keyword,1,1
+automated vehicles,keyword,1,1
+automobility,keyword,1,1
+barry barnes,keyword,1,1
+beginning english teaching and learning,keyword,1,1
+bernard williams,keyword,1,1
+bibliometrics,keyword,1,1
+bio-objects,keyword,1,1
+bioeconomy of meat,keyword,1,1
+bioethics,keyword,1,1
+biofabrication of meat,keyword,1,1
+biology,tfidf,1,1
+biomedical research,keyword,1,1
+biometrics,keyword,1,1
+biopolitics,keyword,1,1
+bioprospecting,keyword,1,1
+biosecurity,keyword,1,1
+biosemiotics,keyword,1,1
+book,tfidf,1,1
+borders,keyword,1,1
+bovine tuberculosis,keyword,1,1
+brazil,keyword,1,1
+bruno latour,keyword,1,1
+bureaucratic systems,keyword,1,1
+canine psychology,keyword,1,1
+case study,tfidf,1,1
+case-studies,keyword,1,1
+cases,keyword,1,1
+cases,tfidf,1,1
+central,tfidf,1,1
+century,tfidf,1,1
+certain,tfidf,1,1
+challenges,tfidf,1,1
+china,keyword,1,1
+chinese buddhism,keyword,1,1
+citations,tfidf,1,1
+climate,keyword,1,1
+climate change,keyword,1,1
+climate change,tfidf,1,1
+co-management,keyword,1,1
+co-production,keyword,1,1
+cognitive,tfidf,1,1
+collective goods,keyword,1,1
+community,tfidf,1,1
+comparative research,keyword,1,1
+complex systems,keyword,1,1
+comprehensive health care,keyword,1,1
+computational social science,keyword,1,1
+computer graphics,keyword,1,1
+computing,tfidf,1,1
+concept,tfidf,1,1
+conceptual,tfidf,1,1
+connectivity,keyword,1,1
+consider,tfidf,1,1
+constructivism,tfidf,1,1
+contemporary atomism,keyword,1,1
+content,tfidf,1,1
+coproduction,keyword,1,1
+coproductionist,keyword,1,1
+core,tfidf,1,1
+costs and prices,keyword,1,1
+covid,tfidf,1,1
+creatives,keyword,1,1
+credibility,keyword,1,1
+credit cycle,keyword,1,1
+crisis,tfidf,1,1
+critical constructivism,keyword,1,1
+critical management studies,keyword,1,1
+critical technical practices,keyword,1,1
+cues,keyword,1,1
+cultural context,keyword,1,1
+cultural sociology,keyword,1,1
+culture,keyword,1,1
+culture,tfidf,1,1
+current,keyword,1,1
+curricula,keyword,1,1
+daily,tfidf,1,1
+darwin,keyword,1,1
+data sovereignty,keyword,1,1
+de-colonial sts,keyword,1,1
+death,keyword,1,1
+debates,tfidf,1,1
+design for well-being,keyword,1,1
+design theory,keyword,1,1
+despite,tfidf,1,1
+development,tfidf,1,1
+diagnostic tools,keyword,1,1
+differentiation,tfidf,1,1
+diffusion,keyword,1,1
+digital cartography,keyword,1,1
+digital sociology,keyword,1,1
+digital technologies,keyword,1,1
+disciplinarity,keyword,1,1
+disciplines,tfidf,1,1
+discourse analysis,keyword,1,1
+discourses,tfidf,1,1
+discursive formation,keyword,1,1
+discusses,tfidf,1,1
+dissent and disputes,keyword,1,1
+dogs,keyword,1,1
+domestication,keyword,1,1
+drugs,keyword,1,1
+du bois,keyword,1,1
+e-government model,keyword,1,1
+e-sport research,keyword,1,1
+ecological crisis,keyword,1,1
+ecologies,keyword,1,1
+economic change,keyword,1,1
+economic sociology,keyword,1,1
+economics,keyword,1,1
+economics of science esk,keyword,1,1
+edinburgh,keyword,1,1
+education professionals,keyword,1,1
+educational technology,keyword,1,1
+embodiment,keyword,1,1
+empirical,tfidf,1,1
+engineering ethics,keyword,1,1
+environmental,tfidf,1,1
+environmental health,keyword,1,1
+environmental social and governance,keyword,1,1
+epidemiology,keyword,1,1
+epistemic democracy,keyword,1,1
+epistemology,keyword,1,1
+equity,keyword,1,1
+ethical technology,keyword,1,1
+ethnographic studies,keyword,1,1
+evidence,tfidf,1,1
+exchange,keyword,1,1
+experiments,keyword,1,1
+expertise,keyword,1,1
+expertise,tfidf,1,1
+faculty hiring networks,keyword,1,1
+female,keyword,1,1
+feminising innovation,keyword,1,1
+fields,tfidf,1,1
+fisheries,keyword,1,1
+fluid space,keyword,1,1
+formal bias,keyword,1,1
+framing,keyword,1,1
+galton s problem,keyword,1,1
+game,tfidf,1,1
+gender,keyword,1,1
+genetic technology,keyword,1,1
+geographies of religion,keyword,1,1
+global health,keyword,1,1
+global metrics,keyword,1,1
+globalization,keyword,1,1
+great britain,keyword,1,1
+groups,tfidf,1,1
+growing,tfidf,1,1
+habitus,keyword,1,1
+harm reduction,keyword,1,1
+health,keyword,1,1
+health,tfidf,1,1
+health policy,keyword,1,1
+health system,keyword,1,1
+historical erasure,keyword,1,1
+historical method,keyword,1,1
+histories,tfidf,1,1
+history and philosophy of medicine,keyword,1,1
+history philosophy,tfidf,1,1
+history science,tfidf,1,1
+human,tfidf,1,1
+human behaviour,keyword,1,1
+including,tfidf,1,1
+individuals,tfidf,1,1
+information diffusion,keyword,1,1
+infrastructure,keyword,1,1
+innovation and gender,keyword,1,1
+innovation processes,keyword,1,1
+integration,tfidf,1,1
+integration experts,tfidf,1,1
+intentionality,keyword,1,1
+interdisciplinarity,keyword,1,1
+interests,tfidf,1,1
+international communication,keyword,1,1
+international comparisons,keyword,1,1
+international organizations,keyword,1,1
+internationalization theories and foreign market entry theories,keyword,1,1
+inventive methods,keyword,1,1
+kind,tfidf,1,1
+knowledge,keyword,1,1
+knowledge exchange,keyword,1,1
+knowledge production,tfidf,1,1
+laboratories,keyword,1,1
+laboratories,tfidf,1,1
+labour,keyword,1,1
+law,tfidf,1,1
+leading,tfidf,1,1
+liturgy,keyword,1,1
+ludwik fleck,keyword,1,1
+management,keyword,1,1
+mannheim,keyword,1,1
+mannheim,tfidf,1,1
+marketing,tfidf,1,1
+material,tfidf,1,1
+meaning finitism,keyword,1,1
+media,tfidf,1,1
+merton,tfidf,1,1
+methodology,tfidf,1,1
+migration statistics,keyword,1,1
+mingoville,keyword,1,1
+modelling,keyword,1,1
+models,tfidf,1,1
+multispecies ethnography,keyword,1,1
+natural,tfidf,1,1
+need,tfidf,1,1
+neoliberalism,keyword,1,1
+network space,keyword,1,1
+non invitation,keyword,1,1
+nuclear,tfidf,1,1
+objectivity,keyword,1,1
+ongoing,tfidf,1,1
+online,tfidf,1,1
+online community,keyword,1,1
+ontological,tfidf,1,1
+open script design,keyword,1,1
+organisational,tfidf,1,1
+paper,tfidf,1,1
+participation,keyword,1,1
+path,tfidf,1,1
+perception,tfidf,1,1
+philosophical,tfidf,1,1
+philosophical critiques to ai,keyword,1,1
+philosophy of nature,keyword,1,1
+philosophy science,tfidf,1,1
+philosophy sociology,tfidf,1,1
+pisa,keyword,1,1
+policies,tfidf,1,1
+policy,tfidf,1,1
+political,tfidf,1,1
+politics,tfidf,1,1
+practice,tfidf,1,1
+prayers,keyword,1,1
+prize,tfidf,1,1
+problems,tfidf,1,1
+processes,tfidf,1,1
+professional,tfidf,1,1
+professional aspects,keyword,1,1
+programs,tfidf,1,1
+projects,tfidf,1,1
+psychology,tfidf,1,1
+published,tfidf,1,1
+qualitative,tfidf,1,1
+quality,tfidf,1,1
+reflexive,tfidf,1,1
+relations,tfidf,1,1
+research agendas,keyword,1,1
+response,tfidf,1,1
+scale,tfidf,1,1
+scholarship,tfidf,1,1
+science,keyword,1,1
+science and technology studies,keyword,1,1
+science and technology studies sts,keyword,1,1
+science communication,tfidf,1,1
+science policy,keyword,1,1
+science policy,tfidf,1,1
+science studies,keyword,1,1
+sciences,tfidf,1,1
+scientists,keyword,1,1
+second,tfidf,1,1
+security,tfidf,1,1
+silicon valley,keyword,1,1
+social movements,keyword,1,1
+social studies,tfidf,1,1
+socially responsible investment,keyword,1,1
+socio-technical systems,keyword,1,1
+sociologists,tfidf,1,1
+sociology,keyword,1,1
+status,tfidf,1,1
+strong,tfidf,1,1
+structure,tfidf,1,1
+students,keyword,1,1
+students,tfidf,1,1
+suggests,tfidf,1,1
+systematic,tfidf,1,1
+teaching,tfidf,1,1
+theories,tfidf,1,1
+theory,tfidf,1,1
+time,tfidf,1,1
+traditional,tfidf,1,1
+trust,tfidf,1,1
+understand,tfidf,1,1
+video analysis,keyword,1,1
+women,tfidf,1,1
+written,tfidf,1,1
+zilsel,tfidf,1,1
+zoo,tfidf,1,1

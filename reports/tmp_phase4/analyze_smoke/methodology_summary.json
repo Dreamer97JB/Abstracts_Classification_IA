@@ -1,0 +1,15 @@
+{
+  "row_count": 157,
+  "label_counts": {
+    "NN": 57,
+    "empirico": 52,
+    "no_empirico": 41,
+    "unassigned": 7
+  },
+  "review_queue_count": 26,
+  "review_reason_counts": {
+    "insufficient_evidence": 14,
+    "conflicting_cues": 12
+  },
+  "evaluation_status": "skipped"
+}

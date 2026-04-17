@@ -31,18 +31,18 @@
 ### Evaluation
 
 - [x] **EVAL-01**: Analyst can generate a theory metrics bundle with accuracy, macro F1, weighted F1, confusion matrix, and per-class performance for a labeled split.
-- [ ] **EVAL-02**: Analyst can generate a methodology metrics bundle when reviewed methodology labels are available.
+- [x] **EVAL-02**: Analyst can generate a methodology metrics bundle when reviewed methodology labels are available.
 - [ ] **EVAL-03**: Analyst can export low-confidence and taxonomy-conflict cases using configurable thresholds and review rules.
 
 ### Methodology
 
-- [ ] **METH-01**: Analyst can classify methodology as `NN`, `no empirico`, or `empirico`.
-- [ ] **METH-02**: If methodology is `empirico`, analyst can classify the sub-type as `cualitativo` or `cuantitativo`.
-- [ ] **METH-03**: Analyst can flag outliers or insufficient-evidence cases without forcing a false subtype.
+- [x] **METH-01**: Analyst can classify methodology as `NN`, `no empirico`, or `empirico`.
+- [x] **METH-02**: If methodology is `empirico`, analyst can classify the sub-type as `cualitativo` or `cuantitativo`.
+- [x] **METH-03**: Analyst can flag outliers or insufficient-evidence cases without forcing a false subtype.
 
 ### Analysis
 
-- [ ] **ANLY-01**: Analyst can generate theme outputs that do not overwrite or blur the main theory and methodology outputs.
+- [x] **ANLY-01**: Analyst can generate theme outputs that do not overwrite or blur the main theory and methodology outputs.
 - [ ] **ANLY-02**: Analyst can generate correlation tables crossing canonical labels with keywords, authors, or other metadata for exploratory review.
 - [ ] **ANLY-03**: Analyst can generate reference and author summaries associated with reviewed or predicted labels.
 
@@ -91,14 +91,14 @@
 | CORP-03 | Phase 2 | Pending |
 | TAXO-02 | Phase 2 | Pending |
 | TAXO-03 | Phase 2 | Pending |
-| METH-01 | Phase 2 | Pending |
-| METH-02 | Phase 2 | Pending |
-| METH-03 | Phase 2 | Pending |
+| METH-01 | Phase 4 | Complete |
+| METH-02 | Phase 4 | Complete |
+| METH-03 | Phase 4 | Complete |
 | THEO-01 | Phase 3 | Complete |
 | THEO-03 | Phase 3 | Complete |
 | EVAL-01 | Phase 3 | Complete |
-| EVAL-02 | Phase 4 | Pending |
-| ANLY-01 | Phase 4 | Pending |
+| EVAL-02 | Phase 4 | Complete |
+| ANLY-01 | Phase 4 | Complete |
 | THEO-02 | Phase 5 | Pending |
 | EVAL-03 | Phase 5 | Pending |
 | ANLY-02 | Phase 5 | Pending |
@@ -113,4 +113,4 @@
 
 ---
 *Requirements defined: 2026-04-02*
-*Last updated: 2026-04-16 after completing Phase 3 baseline classifier execution*
+*Last updated: 2026-04-17 after completing Phase 4 methodology and theme pipeline execution*

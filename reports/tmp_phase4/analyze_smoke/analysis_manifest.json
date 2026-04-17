@@ -1,0 +1,24 @@
+{
+  "run_id": "smoke_phase4",
+  "input_artifact": "reports/phase2_gold_supervision.csv",
+  "output_directory": "reports/tmp_phase4/analyze_smoke",
+  "methodology": {
+    "config_path": "configs/methodology_baseline.toml",
+    "text_variant": "abstract_plus_keywords",
+    "artifacts": {
+      "assignments": "reports/tmp_phase4/analyze_smoke/methodology_assignments.csv",
+      "review_queue": "reports/tmp_phase4/analyze_smoke/methodology_review_queue.csv",
+      "summary": "reports/tmp_phase4/analyze_smoke/methodology_summary.json"
+    }
+  },
+  "themes": {
+    "config_path": "configs/theme_pipeline.toml",
+    "artifacts": {
+      "assignments": "reports/tmp_phase4/analyze_smoke/theme_assignments.csv",
+      "summary": "reports/tmp_phase4/analyze_smoke/theme_summary.csv"
+    }
+  },
+  "skip_methodology": false,
+  "skip_themes": false,
+  "reviewed_methodology_artifact": ""
+}

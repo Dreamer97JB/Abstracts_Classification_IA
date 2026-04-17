@@ -23,12 +23,12 @@ Deliver defensible automatic classifications over the client corpus using a cano
 - [x] Phase 01 established the canonical Arbor taxonomy contract plus a review-oriented legacy label inventory.
 - [x] Phase 02 assembled governed theory gold tables, methodology review outputs, and the fixed `phase2_v1` split from `Seed` and `Muestras`.
 - [x] Phase 03 replaced the placeholder theory `train` and `evaluate` commands with a reproducible baseline classifier workflow plus explicit text-variant benchmarking.
+- [x] Phase 04 replaced the placeholder `analyze` command with a run-bundle workflow that emits separate methodology and theme outputs plus optional methodology evaluation artifacts.
 
 ### Active
 
-- [ ] Add methodology classification with the hierarchy `NN` / `no empirico` / `empirico -> cualitativo|cuantitativo`, including outlier handling.
-- [ ] Produce theme and correlation outputs for client analysis without blurring the theory-classification contract.
 - [ ] Extend the governed theory path from labeled-split evaluation to full-corpus batch inference, confidence review exports, and client-ready outputs.
+- [ ] Add correlation, author, and reference summaries on top of the new Phase 4 outputs without blurring the theory-classification contract.
 
 ### Out of Scope
 
@@ -48,6 +48,7 @@ Deliver defensible automatic classifications over the client corpus using a cano
 - The machine now has a validated WSL2 + Ubuntu 24.04 + ROCm path with AMD Radeon RX 9070 support for PyTorch workloads.
 - The client also wants methodology, themes, and correlation-style outputs, so the milestone must separate core classification from secondary analysis.
 - Phase 03 now provides the first script-driven theory baseline with persisted manifests, metrics, predictions, and `abstract_only` versus `abstract_plus_keywords` comparison artifacts under `reports/tmp_phase3/`.
+- Phase 04 now provides a script-driven analysis bundle with methodology assignments, review queues, optional methodology metrics, and separate theme outputs under `reports/tmp_phase4/`.
 - Detailed evidence from the new files is captured in `.planning/research/CLIENT_SCOPE_2026-04-02.md`.
 
 ## Constraints
@@ -67,8 +68,8 @@ Deliver defensible automatic classifications over the client corpus using a cano
 | Use the Arbor article as the semantic source of truth for theory labels | The client provided a concrete six-type typology, so taxonomy meaning should not float across spreadsheets | Validated in Phase 01 via `configs/taxonomy.toml` and `src/abstract_classifier/taxonomy.py` |
 | Treat Scopus as the main operational corpus and Google as secondary historical support | Scopus has stronger metadata coverage through keywords and references and contains the `Muestras` subset directly | Operationalized in Phase 01 manifests and overlap tie-break rules |
 | Treat `Seed` and `Muestras` as supervision sources that require canonical remapping first | The label codes are inconsistent and cannot be trusted raw as gold labels | Validated in Phase 01 taxonomy inventory and review-required mapping statuses |
-| Model methodology separately with a hierarchy and explicit outlier handling | The client notes define methodology as a separate decision chain, not a side effect of theory labeling | - Pending |
-| Keep themes and correlation outputs secondary to the theory classifier contract | The client wants them, but they should consume a stable classified corpus rather than define the main label logic | - Pending |
+| Model methodology separately with a hierarchy and explicit outlier handling | The client notes define methodology as a separate decision chain, not a side effect of theory labeling | Validated in Phase 04 via `configs/methodology_baseline.toml`, `src/abstract_classifier/methodology_pipeline.py`, and `analyze` |
+| Keep themes and correlation outputs secondary to the theory classifier contract | The client wants them, but they should consume a stable classified corpus rather than define the main label logic | Partially validated in Phase 04 for themes; correlations remain Phase 05 |
 
 ## Current Milestone: v1.0 Taxonomia Arbor y Clasificacion Cliente
 
@@ -98,4 +99,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-16 after completing Phase 3 and advancing toward Phase 4*
+*Last updated: 2026-04-17 after completing Phase 4 and advancing toward Phase 5*

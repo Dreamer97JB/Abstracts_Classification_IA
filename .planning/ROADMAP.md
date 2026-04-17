@@ -13,7 +13,7 @@ This milestone turns the newly delivered client corpora, labeled subsets, and Ar
 - [x] **Phase 1: Canonical Taxonomy and Corpus Contracts** - Establish script entrypoints, source manifests, overlap rules, and the canonical theory taxonomy.
 - [x] **Phase 2: Label Harmonization and Reviewed Gold Set Assembly** - Reconcile Seed and `Muestras`, define methodology labels, and produce governed training/evaluation tables.
 - [x] **Phase 3: Baseline Theory Classifier** - Implement the first canonical theory classification path with explicit benchmarks and metrics.
-- [ ] **Phase 4: Methodology and Theme Pipeline** - Add methodology classification and optional theme outputs without polluting the theory contract.
+- [x] **Phase 4: Methodology and Theme Pipeline** - Add methodology classification and optional theme outputs without polluting the theory contract.
 - [ ] **Phase 5: Full-Corpus Inference and Client Deliverables** - Run inference over the selected corpora and generate review, correlation, and delivery-ready outputs.
 
 ## Phase Details
@@ -65,7 +65,7 @@ Plans:
 ### Phase 4: Methodology and Theme Pipeline
 **Goal**: Add the secondary analytical outputs the client asked for while keeping them structurally separate from the theory label contract.
 **Depends on**: Phase 3
-**Requirements**: [EVAL-02, ANLY-01]
+**Requirements**: [METH-01, METH-02, METH-03, EVAL-02, ANLY-01]
 **Success Criteria** (what must be TRUE):
   1. Analyst can classify methodology according to the agreed hierarchy and evaluate it when reviewed labels exist.
   2. Theme outputs are generated as separate modules and do not overwrite theory or methodology columns.
@@ -73,8 +73,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Implement methodology classification and evaluation flow
-- [ ] 04-02: Implement theme extraction module and its output contracts
+- [x] 04-01: Implement methodology classification and evaluation flow
+- [x] 04-02: Implement theme extraction module and its output contracts
 
 ### Phase 5: Full-Corpus Inference and Client Deliverables
 **Goal**: Classify the chosen corpora at scale and produce the simplified deliverables, review queues, and correlations the client expects.
@@ -97,8 +97,8 @@ Plans:
 | 1. Canonical Taxonomy and Corpus Contracts | 3/3 | Complete | 2026-04-16 |
 | 2. Label Harmonization and Reviewed Gold Set Assembly | 3/3 | Complete | 2026-04-16 |
 | 3. Baseline Theory Classifier | 2/2 | Complete | 2026-04-16 |
-| 4. Methodology and Theme Pipeline | 0/2 | Not started | - |
+| 4. Methodology and Theme Pipeline | 2/2 | Complete | 2026-04-17 |
 | 5. Full-Corpus Inference and Client Deliverables | 0/2 | Not started | - |
 
 ---
-*Roadmap updated: 2026-04-16 after completing Phase 3 baseline theory classifier execution*
+*Roadmap updated: 2026-04-17 after completing Phase 4 methodology and theme pipeline execution*
