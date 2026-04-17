@@ -1,0 +1,157 @@
+{
+  "run_id": "abstract_plus_keywords_test",
+  "config_version": "1",
+  "model_family": "tfidf_logreg",
+  "model_class": "sklearn.pipeline.Pipeline",
+  "text_variant": "abstract_plus_keywords",
+  "training_split": "train",
+  "split_version": "phase2_v1",
+  "split_seed": 20260416,
+  "inputs": {
+    "config_path": "configs/theory_baseline.toml",
+    "taxonomy_config": "configs/taxonomy.toml",
+    "supervision_config": "configs/supervision.toml",
+    "gold_artifact": "reports/phase2_gold_supervision.csv",
+    "split_artifact": "reports/phase2_split_assignments.csv"
+  },
+  "config_snapshot": {
+    "default_text_variant": "abstract_only",
+    "comparison_variants": [
+      "abstract_only",
+      "abstract_plus_keywords"
+    ],
+    "training": {
+      "max_features": 5000,
+      "ngram_min": 1,
+      "ngram_max": 2,
+      "min_df": 1,
+      "max_iter": 2000,
+      "class_weight": "balanced",
+      "random_state": 20260416
+    },
+    "evaluation": {
+      "default_split": "test"
+    }
+  },
+  "label_order": [
+    "tipo_1_realismo_fuerte",
+    "tipo_2_realismo_moderado_critico",
+    "tipo_3_antirrealismo_epistemologico",
+    "tipo_4_pragmatismo_epistemologico",
+    "tipo_5_constructivismo_moderado",
+    "tipo_6_constructivismo_fuerte_relativismo"
+  ],
+  "label_lookup": [
+    {
+      "canonical_id": "tipo_1_realismo_fuerte",
+      "label_canonica": "Tipo 1 - Realismo fuerte"
+    },
+    {
+      "canonical_id": "tipo_2_realismo_moderado_critico",
+      "label_canonica": "Tipo 2 - Realismo moderado / critico"
+    },
+    {
+      "canonical_id": "tipo_3_antirrealismo_epistemologico",
+      "label_canonica": "Tipo 3 - Antirrealismo epistemologico"
+    },
+    {
+      "canonical_id": "tipo_4_pragmatismo_epistemologico",
+      "label_canonica": "Tipo 4 - Pragmatismo epistemologico"
+    },
+    {
+      "canonical_id": "tipo_5_constructivismo_moderado",
+      "label_canonica": "Tipo 5 - Constructivismo moderado"
+    },
+    {
+      "canonical_id": "tipo_6_constructivismo_fuerte_relativismo",
+      "label_canonica": "Tipo 6 - Constructivismo fuerte / relativismo"
+    }
+  ],
+  "training_label_counts": {
+    "tipo_1_realismo_fuerte": 6,
+    "tipo_2_realismo_moderado_critico": 27,
+    "tipo_3_antirrealismo_epistemologico": 4,
+    "tipo_4_pragmatismo_epistemologico": 7,
+    "tipo_5_constructivismo_moderado": 47,
+    "tipo_6_constructivismo_fuerte_relativismo": 18
+  },
+  "keyword_coverage": {
+    "text_variant": "abstract_plus_keywords",
+    "row_count": 157,
+    "keyword_rows_available": 68,
+    "keyword_rows_enriched": 68,
+    "keyword_availability_rate": 0.43312101910828027,
+    "keyword_coverage_rate": 0.43312101910828027,
+    "by_source_split": [
+      {
+        "source_dataset": "muestras",
+        "split": "test",
+        "row_count": 17,
+        "keyword_rows_available": 12,
+        "keyword_rows_enriched": 12,
+        "keyword_availability_rate": 0.7058823529411765,
+        "keyword_coverage_rate": 0.7058823529411765
+      },
+      {
+        "source_dataset": "muestras",
+        "split": "train",
+        "row_count": 64,
+        "keyword_rows_available": 43,
+        "keyword_rows_enriched": 43,
+        "keyword_availability_rate": 0.671875,
+        "keyword_coverage_rate": 0.671875
+      },
+      {
+        "source_dataset": "muestras",
+        "split": "val",
+        "row_count": 14,
+        "keyword_rows_available": 13,
+        "keyword_rows_enriched": 13,
+        "keyword_availability_rate": 0.9285714285714286,
+        "keyword_coverage_rate": 0.9285714285714286
+      },
+      {
+        "source_dataset": "seed",
+        "split": "test",
+        "row_count": 7,
+        "keyword_rows_available": 0,
+        "keyword_rows_enriched": 0,
+        "keyword_availability_rate": 0.0,
+        "keyword_coverage_rate": 0.0
+      },
+      {
+        "source_dataset": "seed",
+        "split": "train",
+        "row_count": 45,
+        "keyword_rows_available": 0,
+        "keyword_rows_enriched": 0,
+        "keyword_availability_rate": 0.0,
+        "keyword_coverage_rate": 0.0
+      },
+      {
+        "source_dataset": "seed",
+        "split": "val",
+        "row_count": 10,
+        "keyword_rows_available": 0,
+        "keyword_rows_enriched": 0,
+        "keyword_availability_rate": 0.0,
+        "keyword_coverage_rate": 0.0
+      }
+    ]
+  },
+  "artifacts": {
+    "model": "model.joblib",
+    "keyword_coverage": "keyword_coverage.json",
+    "metrics_overall": "metrics_overall.json",
+    "metrics_per_class": "metrics_per_class.csv",
+    "confusion_matrix": "confusion_matrix.csv",
+    "predictions": "predictions.csv",
+    "variant_comparison": "variant_comparison.csv"
+  },
+  "environment": {
+    "python_version": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "sklearn_version": "1.6.1"
+  },
+  "run_directory": "reports/tmp_phase3/variant_compare/abstract_plus_keywords"
+}

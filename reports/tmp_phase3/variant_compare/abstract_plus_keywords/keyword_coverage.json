@@ -1,0 +1,64 @@
+{
+  "text_variant": "abstract_plus_keywords",
+  "row_count": 157,
+  "keyword_rows_available": 68,
+  "keyword_rows_enriched": 68,
+  "keyword_availability_rate": 0.43312101910828027,
+  "keyword_coverage_rate": 0.43312101910828027,
+  "by_source_split": [
+    {
+      "source_dataset": "muestras",
+      "split": "test",
+      "row_count": 17,
+      "keyword_rows_available": 12,
+      "keyword_rows_enriched": 12,
+      "keyword_availability_rate": 0.7058823529411765,
+      "keyword_coverage_rate": 0.7058823529411765
+    },
+    {
+      "source_dataset": "muestras",
+      "split": "train",
+      "row_count": 64,
+      "keyword_rows_available": 43,
+      "keyword_rows_enriched": 43,
+      "keyword_availability_rate": 0.671875,
+      "keyword_coverage_rate": 0.671875
+    },
+    {
+      "source_dataset": "muestras",
+      "split": "val",
+      "row_count": 14,
+      "keyword_rows_available": 13,
+      "keyword_rows_enriched": 13,
+      "keyword_availability_rate": 0.9285714285714286,
+      "keyword_coverage_rate": 0.9285714285714286
+    },
+    {
+      "source_dataset": "seed",
+      "split": "test",
+      "row_count": 7,
+      "keyword_rows_available": 0,
+      "keyword_rows_enriched": 0,
+      "keyword_availability_rate": 0.0,
+      "keyword_coverage_rate": 0.0
+    },
+    {
+      "source_dataset": "seed",
+      "split": "train",
+      "row_count": 45,
+      "keyword_rows_available": 0,
+      "keyword_rows_enriched": 0,
+      "keyword_availability_rate": 0.0,
+      "keyword_coverage_rate": 0.0
+    },
+    {
+      "source_dataset": "seed",
+      "split": "val",
+      "row_count": 10,
+      "keyword_rows_available": 0,
+      "keyword_rows_enriched": 0,
+      "keyword_availability_rate": 0.0,
+      "keyword_coverage_rate": 0.0
+    }
+  ]
+}

@@ -11,6 +11,8 @@ import pytest
         (["--help"], "audit"),
         (["audit", "--help"], "--output"),
         (["prepare", "--help"], "Prepare canonical corpus tables"),
+        (["train", "--help"], "--run-id"),
+        (["evaluate", "--help"], "--compare-variants"),
     ],
 )
 def test_cli_help_surfaces_registered_commands(cli_runner, args, expected_text) -> None:

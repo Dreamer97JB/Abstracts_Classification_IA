@@ -1,0 +1,7 @@
+canonical_id,label_canonica,precision,recall,f1_score,support
+tipo_1_realismo_fuerte,Tipo 1 - Realismo fuerte,0.0,0.0,0.0,2
+tipo_2_realismo_moderado_critico,Tipo 2 - Realismo moderado / critico,0.16666666666666666,0.16666666666666666,0.16666666666666666,6
+tipo_3_antirrealismo_epistemologico,Tipo 3 - Antirrealismo epistemologico,0.0,0.0,0.0,1
+tipo_4_pragmatismo_epistemologico,Tipo 4 - Pragmatismo epistemologico,0.0,0.0,0.0,1
+tipo_5_constructivismo_moderado,Tipo 5 - Constructivismo moderado,0.4375,0.7,0.5384615384615384,10
+tipo_6_constructivismo_fuerte_relativismo,Tipo 6 - Constructivismo fuerte / relativismo,0.5,0.25,0.3333333333333333,4
