@@ -1,0 +1,10 @@
+version = "1"
+supervision_config = "configs/supervision.toml"
+default_output_root = "reports/phase4"
+max_themes_per_record = 3
+
+[tfidf]
+ngram_min = 1
+ngram_max = 2
+max_features = 512
+min_df = 1

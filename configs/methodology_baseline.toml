@@ -1,0 +1,84 @@
+version = "1"
+methodology_contract = "configs/methodology.toml"
+supervision_config = "configs/supervision.toml"
+default_input_artifact = "reports/phase2_gold_supervision.csv"
+default_output_root = "reports/phase4"
+default_text_variant = "abstract_plus_keywords"
+
+[heuristics]
+signal_margin = 1
+
+[cues]
+non_empirical = [
+  "conceptual",
+  "theoretical",
+  "philosophical",
+  "literature review",
+  "review of the literature",
+  "state of the art",
+  "essay",
+  "perspective",
+  "commentary",
+  "conceptual framework",
+  "historical analysis",
+]
+empirical = [
+  "empirical",
+  "dataset",
+  "data set",
+  "data from",
+  "sample",
+  "participants",
+  "respondents",
+  "study draws on",
+  "we analyze",
+  "we analysed",
+  "this study",
+  "survey",
+  "interview",
+  "experiment",
+  "case study",
+  "ethnograph",
+  "bibliometric",
+  "scientometric",
+  "statistical",
+  "regression",
+  "bayesian",
+  "simulation",
+  "agent based",
+  "modeling",
+  "modelling",
+]
+qualitative = [
+  "qualitative",
+  "interview",
+  "focus group",
+  "ethnograph",
+  "ethnographic",
+  "autoethnograph",
+  "participant observation",
+  "fieldwork",
+  "case study",
+  "document analysis",
+  "documentary analysis",
+  "discourse analysis",
+  "content analysis",
+  "digital ethnography",
+]
+quantitative = [
+  "quantitative",
+  "bibliometric",
+  "scientometric",
+  "statistical",
+  "regression",
+  "bayesian",
+  "correlation",
+  "survey",
+  "questionnaire",
+  "simulation",
+  "agent based",
+  "modeling",
+  "modelling",
+  "network analysis",
+  "meta-analysis",
+]
