@@ -649,6 +649,16 @@ def _interactive_html(payload: dict[str, object]) -> str:
     .heatmap-side {{ justify-content: flex-start; font-weight: 600; background: #fbf8f2; }}
     .heatmap-value {{ font-variant-numeric: tabular-nums; }}
     .viz-stack {{ display: grid; gap: 18px; }}
+    .distribution-stack {{ display: grid; gap: 18px; }}
+    .distribution-card {{ border: 1px solid var(--muted); border-radius: 16px; padding: 18px; background: white; }}
+    .distribution-card h3 {{ margin-top: 0; }}
+    .distribution-meta {{ display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 12px; }}
+    .distribution-pill {{ padding: 7px 10px; border-radius: 999px; background: #f5efe2; border: 1px solid #e1d5c0; font-size: 13px; color: #35505a; }}
+    .distribution-viz {{ width: 100%; height: 280px; border: 1px solid #e5dccd; border-radius: 12px; background: linear-gradient(180deg, #fbf8f2, #fff); }}
+    .distribution-toplist {{ margin-top: 14px; display: grid; gap: 8px; }}
+    .distribution-toprow {{ display: grid; grid-template-columns: minmax(180px, 260px) 1fr 72px; gap: 10px; align-items: center; }}
+    .section-stack {{ display: grid; gap: 18px; }}
+    .author-panel .table-wrap {{ max-height: 860px; }}
     .tag {{ display: inline-block; padding: 4px 8px; border-radius: 999px; background: #e6f4ea; color: #1b4332; font-size: 12px; }}
     .empty {{ padding: 16px; border: 1px dashed #c9c1b2; border-radius: 12px; background: #faf7f0; }}
     .kpi-note {{ margin-top: 10px; color: #52606d; font-size: 14px; }}
@@ -671,53 +681,47 @@ def _interactive_html(payload: dict[str, object]) -> str:
   </header>
   <main>
     <section class="panel" id="overview"></section>
-    <section class="grid-2">
+    <section>
       <div class="panel">
         <h2>Descriptive profiles</h2>
-        <p class="muted">Mean, median, mode, and range for the main article-level variables in the classified Scopus corpus.</p>
+        <p class="muted">Mean, median, mode, and range for the main article-level variables in the classified Scopus corpus. Count refers to the number of articles with a usable value for that metric.</p>
         <div id="descriptiveProfiles"></div>
       </div>
-      <div class="panel">
-        <h2>Corpus distributions</h2>
-        <p class="muted">Compact histograms for publication year, references, authors, keywords, and abstract length.</p>
-        <div id="distributionCharts"></div>
-      </div>
+    </section>
+    <section class="panel">
+      <h2>Corpus distributions</h2>
+      <p class="muted">Article-level distributions, now separated into readable full-width panels so the main patterns can be understood at a glance.</p>
+      <div id="distributionCharts" class="distribution-stack"></div>
+    </section>
+    <section class="panel">
+      <div class="tag" style="margin-bottom:10px">Heatmaps</div>
+      <h2>Theme x label heatmap</h2>
+      <p class="muted">How recovered themes distribute across the official classification labels.</p>
+      <div id="themeLabelHeatmap"></div>
+    </section>
+    <section class="panel">
+      <h2>Cited author x label heatmap</h2>
+      <p class="muted">Which cited authors are most associated with each official label after curating the cited-author extraction.</p>
+      <div id="authorLabelHeatmap"></div>
+    </section>
+    <section class="panel">
+      <div class="tag" style="margin-bottom:10px">Temporal evolution</div>
+      <h2>Label x publication year heatmap</h2>
+      <p class="muted">Temporal concentration of the official labels across publication years.</p>
+      <div id="labelYearHeatmap"></div>
+    </section>
+    <section class="panel">
+      <h2>Theme timeline</h2>
+      <p class="muted">Evolution over time of the most discussed themes recovered in the corpus.</p>
+      <div id="themeTimeline"></div>
+    </section>
+    <section class="panel">
+      <h2>Interpretation guide</h2>
+      <p class="muted">What these descriptive metrics mean, and how to read them in research terms.</p>
+      <div id="interpretationGuide"></div>
     </section>
     <section class="grid-2">
-      <div class="panel">
-        <h2>Heatmaps</h2>
-        <p class="muted">Crosses prioritized for research interpretation: theme x label and cited-author x label.</p>
-        <div class="viz-stack">
-          <div>
-            <span class="tag">Theme x label</span>
-            <div id="themeLabelHeatmap"></div>
-          </div>
-          <div>
-            <span class="tag">Cited author x label</span>
-            <div id="authorLabelHeatmap"></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <h2>Temporal evolution</h2>
-        <p class="muted">How the official labels move across publication years in the classified Scopus corpus.</p>
-        <div id="labelYearHeatmap"></div>
-      </div>
-    </section>
-    <section class="grid-2">
-      <div class="panel">
-        <h2>Theme timeline</h2>
-        <p class="muted">Evolution over time of the most discussed themes recovered in the corpus.</p>
-        <div id="themeTimeline"></div>
-      </div>
-      <div class="panel">
-        <h2>Interpretation guide</h2>
-        <p class="muted">What these descriptive metrics mean, and how to read them in research terms.</p>
-        <div id="interpretationGuide"></div>
-      </div>
-    </section>
-    <section class="grid-2">
-      <div class="panel">
+      <div class="panel author-panel">
         <h2>Authors</h2>
         <p class="muted">Search across all corpus authors. Cited authors are shown as a curated ranked slice here, with the full exported CSV linked below because the complete cited-author universe is very large.</p>
         <div class="controls">
@@ -782,7 +786,7 @@ def _interactive_html(payload: dict[str, object]) -> str:
     const fmtPct = (value) => `${{(value * 100).toFixed(2)}}%`;
     const fmtNumber = (value) => typeof value === 'number' ? value.toLocaleString('en-US') : value;
     const palette = ['#0f766e', '#d97706', '#2563eb', '#a21caf', '#b91c1c', '#0891b2', '#65a30d', '#7c3aed'];
-    const table = (rows, columns) => {{
+    const table = (rows, columns, options = {{}}) => {{
       if (!rows.length) return '<div class="empty">None available for this view.</div>';
       const head = `<tr>${{columns.map((c) => `<th>${{c}}</th>`).join('')}}</tr>`;
       const body = rows.map((row) => `<tr>${{columns.map((c) => {{
@@ -792,7 +796,8 @@ def _interactive_html(payload: dict[str, object]) -> str:
           : fmtNumber(cell ?? '');
         return `<td>${{rendered}}</td>`;
       }}).join('')}}</tr>`).join('');
-      return `<div class="table-wrap"><table><thead>${{head}}</thead><tbody>${{body}}</tbody></table></div>`;
+      const maxHeight = options.maxHeight ? ` style="max-height:${{options.maxHeight}}px"` : '';
+      return `<div class="table-wrap"${{maxHeight}}><table><thead>${{head}}</thead><tbody>${{body}}</tbody></table></div>`;
     }};
     const bars = (rows, keyField) => {{
       if (!rows.length) return '<div class="empty">No ranked distribution available.</div>';
@@ -824,6 +829,19 @@ def _interactive_html(payload: dict[str, object]) -> str:
         </div>
       `).join('')}}</div>`;
     }};
+    const profileByMetric = (rows) =>
+      Object.fromEntries((rows || []).map((row) => [row.metric, row]));
+    const parseBucketStart = (bucket) => {{
+      const text = String(bucket ?? '').trim();
+      const match = text.match(/-?\\d+(?:\\.\\d+)?/);
+      return match ? Number(match[0]) : Number.POSITIVE_INFINITY;
+    }};
+    const summarizeTail = (rows) => {{
+      if (!rows?.length) return {{ total: 0, topShare: 0 }};
+      const total = rows.reduce((sum, row) => sum + (row.count || 0), 0);
+      const ranked = [...rows].sort((a, b) => (b.count || 0) - (a.count || 0));
+      return {{ total, topShare: total ? ((ranked[0]?.count || 0) / total) : 0 }};
+    }};
     const metricInsight = (metric, row, totalArticles) => {{
       if (!row) return '';
       const count = row.count ?? 0;
@@ -837,43 +855,106 @@ def _interactive_html(payload: dict[str, object]) -> str:
       }};
       return `<div class="insight"><strong>${{metric}}:</strong> ${{messages[metric] || ''}}</div>`;
     }};
-    const distributionBlock = (title, rows) => {{
+    const distributionSvg = (rows) => {{
       if (!rows?.length) return '';
+      const width = 920;
+      const height = 280;
+      const margin = {{ top: 16, right: 18, bottom: 54, left: 54 }};
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
       const max = Math.max(...rows.map((row) => row.count || 0), 1);
-      const points = rows.slice(0, 18).map((row, index) => {{
-        const x = rows.length === 1 ? 0 : (index / Math.max(rows.slice(0, 18).length - 1, 1)) * 100;
-        const y = 100 - (((row.count || 0) / max) * 100);
-        return `${{x}},${{y}}`;
-      }}).join(' ');
+      const barWidth = innerWidth / Math.max(rows.length, 1);
+      const tickCount = Math.min(6, rows.length);
+      const tickIndexes = [...new Set(
+        Array.from({{ length: tickCount }}, (_value, index) =>
+          Math.round((index / Math.max(tickCount - 1, 1)) * Math.max(rows.length - 1, 0))
+        )
+      )];
+      const yTicks = [0, 0.25, 0.5, 0.75, 1];
+      const barsMarkup = rows.map((row, index) => {{
+        const value = row.count || 0;
+        const barHeight = (value / max) * innerHeight;
+        const x = margin.left + (index * barWidth) + Math.max(barWidth * 0.08, 1);
+        const y = margin.top + innerHeight - barHeight;
+        const widthPx = Math.max(barWidth * 0.84, 1.5);
+        const title = `${{row.bucket}}: ${{fmtNumber(value)}} articles`;
+        return `<g><title>${{title}}</title><rect x="${{x.toFixed(2)}}" y="${{y.toFixed(2)}}" width="${{widthPx.toFixed(2)}}" height="${{barHeight.toFixed(2)}}" rx="2" fill="#0f766e" opacity="0.88"></rect></g>`;
+      }}).join('');
+      const xTicksMarkup = tickIndexes.map((index) => {{
+        const x = margin.left + ((index + 0.5) * barWidth);
+        const label = rows[index]?.bucket ?? '';
+        return `
+          <line x1="${{x.toFixed(2)}}" y1="${{height - margin.bottom}}" x2="${{x.toFixed(2)}}" y2="${{height - margin.bottom + 6}}" stroke="#9ca3af" stroke-width="1"></line>
+          <text x="${{x.toFixed(2)}}" y="${{height - margin.bottom + 22}}" text-anchor="middle" font-size="12" fill="#52606d">${{label}}</text>
+        `;
+      }}).join('');
+      const yTicksMarkup = yTicks.map((ratio) => {{
+        const value = Math.round(max * ratio);
+        const y = margin.top + innerHeight - (ratio * innerHeight);
+        return `
+          <line x1="${{margin.left}}" y1="${{y.toFixed(2)}}" x2="${{width - margin.right}}" y2="${{y.toFixed(2)}}" stroke="#ebe3d4" stroke-width="1"></line>
+          <text x="${{margin.left - 10}}" y="${{(y + 4).toFixed(2)}}" text-anchor="end" font-size="12" fill="#52606d">${{fmtNumber(value)}}</text>
+        `;
+      }}).join('');
       return `
-        <div style="margin-bottom:16px">
+        <svg viewBox="0 0 ${{width}} ${{height}}" class="distribution-viz" preserveAspectRatio="none" aria-label="Distribution chart">
+          <line x1="${{margin.left}}" y1="${{height - margin.bottom}}" x2="${{width - margin.right}}" y2="${{height - margin.bottom}}" stroke="#6b7280" stroke-width="1.2"></line>
+          <line x1="${{margin.left}}" y1="${{margin.top}}" x2="${{margin.left}}" y2="${{height - margin.bottom}}" stroke="#6b7280" stroke-width="1.2"></line>
+          ${{yTicksMarkup}}
+          ${{barsMarkup}}
+          ${{xTicksMarkup}}
+        </svg>
+      `;
+    }};
+    const distributionTopRows = (rows) => {{
+      const ranked = [...(rows || [])].sort((a, b) => (b.count || 0) - (a.count || 0));
+      if (!ranked.length) return '';
+      const topRows = ranked.slice(0, 10);
+      const max = Math.max(...topRows.map((row) => row.count || 0), 1);
+      return `<div class="distribution-toplist">${{topRows.map((row) => `
+        <div class="distribution-toprow">
+          <div>${{row.bucket}}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${{((row.count || 0) / max) * 100}}%"></div></div>
+          <div>${{fmtNumber(row.count || 0)}}</div>
+        </div>
+      `).join('')}}</div>`;
+    }};
+    const distributionBlock = (title, rows, profile) => {{
+      if (!rows?.length) return '';
+      const ordered = [...rows].sort((a, b) => parseBucketStart(a.bucket) - parseBucketStart(b.bucket));
+      const dominant = [...ordered].sort((a, b) => (b.count || 0) - (a.count || 0))[0];
+      const summary = summarizeTail(ordered);
+      return `
+        <div class="distribution-card">
           <h3>${{title}}</h3>
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:90px;margin-bottom:10px;background:linear-gradient(180deg,#f8f5ee,#fff);border:1px solid #e5dccd;border-radius:10px">
-            <polyline fill="none" stroke="#d97706" stroke-width="2.5" points="${{points}}"></polyline>
-          </svg>
-          <div class="insight">${{distributionInsight(title, rows)}}</div>
-          <div class="bars">${{rows.slice(0, 18).map((row) => `
-            <div class="bar-row">
-              <div>${{row.bucket}}</div>
-              <div class="bar-track"><div class="bar-fill" style="width:${{((row.count || 0) / max) * 100}}%"></div></div>
-              <div>${{fmtNumber(row.count || 0)}}</div>
-            </div>
-          `).join('')}}</div>
+          <div class="distribution-meta">
+            <span class="distribution-pill">Articles with value: ${{fmtNumber(profile?.count ?? summary.total)}}</span>
+            <span class="distribution-pill">Mean: ${{fmtNumber(profile?.mean ?? 'n/a')}}</span>
+            <span class="distribution-pill">Median: ${{fmtNumber(profile?.median ?? 'n/a')}}</span>
+            <span class="distribution-pill">Mode: ${{fmtNumber(profile?.mode ?? dominant?.bucket ?? 'n/a')}}</span>
+            <span class="distribution-pill">Dominant bucket share: ${{fmtPct(summary.topShare)}}</span>
+          </div>
+          ${{distributionSvg(ordered)}}
+          <div class="insight">${{distributionInsight(title, ordered, profile)}}</div>
+          <div class="kpi-note">Top buckets by article count. The chart above preserves the full ordered distribution, while the ranked list below highlights where the corpus concentrates most strongly.</div>
+          ${{distributionTopRows(ordered)}}
         </div>
       `;
     }};
-    const distributionInsight = (title, rows) => {{
+    const distributionInsight = (title, rows, profile) => {{
       if (!rows?.length) return 'No distributional evidence is available for this variable.';
       const sorted = [...rows].sort((a, b) => (b.count || 0) - (a.count || 0));
       const dominant = sorted[0];
       const last = rows[rows.length - 1];
       const first = rows[0];
+      const mean = profile?.mean;
+      const median = profile?.median;
       const messages = {{
-        'Publication year': `The tallest bar is around <strong>${{dominant.bucket}}</strong>, which helps locate the most concentrated publication period. Read this together with the median year to see whether the corpus is historically recent or more evenly spread.`,
-        'References per article': `The most common reference bucket is <strong>${{dominant.bucket}}</strong>. Compare the dense central buckets against the right tail to see whether a small number of review-like papers are inflating the average reference count.`,
-        'Authors per article': `The modal collaboration size is <strong>${{dominant.bucket}}</strong>. If the first buckets dominate heavily, the corpus is being produced mostly by solo or small-team authorship.`,
-        'Keywords per article': `The most common metadata richness bucket is <strong>${{dominant.bucket}}</strong>. This helps gauge how much thematic self-description authors and indexers are providing.`,
-        'Abstract words': `The most common abstract-length bucket is <strong>${{dominant.bucket}}</strong>. The distance between <strong>${{first.bucket}}</strong> and <strong>${{last.bucket}}</strong> shows how heterogeneous abstract writing conventions are across the corpus.`,
+        'Publication year': `The highest concentration appears around <strong>${{dominant.bucket}}</strong>. With a mean of <strong>${{fmtNumber(mean)}}</strong> and a median of <strong>${{fmtNumber(median)}}</strong>, this panel shows whether the corpus is concentrated in recent years or whether earlier decades still carry substantial weight.`,
+        'References per article': `The most recurrent bibliography-size bucket is <strong>${{dominant.bucket}}</strong>. Compare that center with the extended right tail to identify whether a smaller subset of review-style or theory-heavy papers is pulling the average upward.`,
+        'Authors per article': `The most common authorship size is <strong>${{dominant.bucket}}</strong>. Here, <strong>0</strong> usually means missing author metadata rather than a true zero-author article, while a dominant value near <strong>1</strong> indicates a literature produced mainly by solo authors.`,
+        'Keywords per article': `The most common keyword-count bucket is <strong>${{dominant.bucket}}</strong>. In this chart, <strong>0</strong> means articles without usable keyword metadata, so the left side reflects metadata absence as much as thematic sparsity.`,
+        'Abstract words': `The most recurrent abstract-length bucket is <strong>${{dominant.bucket}}</strong>. The span from <strong>${{first.bucket}}</strong> to <strong>${{last.bucket}}</strong> shows how heterogeneous abstract-writing conventions are across journals, periods, and document types.`,
       }};
       return messages[title] || `The most common bucket here is <strong>${{dominant.bucket}}</strong>.`;
     }};
@@ -908,36 +989,67 @@ def _interactive_html(payload: dict[str, object]) -> str:
       const themes = [...new Set(rows.map((row) => row.theme))].slice(0, 8);
       const years = [...new Set(rows.map((row) => row.year))].sort((a, b) => a - b);
       const max = Math.max(...rows.map((row) => row.article_count || 0), 1);
+      const width = 960;
+      const height = 320;
+      const margin = {{ top: 18, right: 20, bottom: 56, left: 54 }};
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+      const xForYear = (yearIndex) => margin.left + (yearIndex / Math.max(years.length - 1, 1)) * innerWidth;
+      const yForValue = (value) => margin.top + innerHeight - ((value / max) * innerHeight);
       const series = themes.map((theme, index) => {{
+        const themedRows = rows.filter((row) => row.theme === theme);
+        const total = themedRows.reduce((sum, row) => sum + (row.article_count || 0), 0);
         const points = years.map((year, yearIndex) => {{
           const match = rows.find((row) => row.theme === theme && row.year === year);
           const value = match?.article_count || 0;
-          const x = years.length === 1 ? 0 : (yearIndex / Math.max(years.length - 1, 1)) * 100;
-          const y = 100 - ((value / max) * 100);
+          const x = xForYear(yearIndex);
+          const y = yForValue(value);
           return `${{x}},${{y}}`;
         }}).join(' ');
         return {{
           theme,
           color: palette[index % palette.length],
           points,
+          total,
         }};
       }});
-      const ticks = years.filter((_year, index) => index % Math.max(1, Math.floor(years.length / 8)) === 0);
+      const tickIndexes = [...new Set([
+        0,
+        ...Array.from({{ length: Math.min(6, years.length) }}, (_value, index) =>
+          Math.round((index / Math.max(Math.min(6, years.length) - 1, 1)) * Math.max(years.length - 1, 0))
+        ),
+        years.length - 1,
+      ])].filter((index) => index >= 0);
+      const yTicks = [0, 0.25, 0.5, 0.75, 1];
       return `
-        <svg viewBox="0 0 100 110" preserveAspectRatio="none" style="width:100%;height:240px;background:linear-gradient(180deg,#fbf8f2,#fff);border:1px solid #e5dccd;border-radius:12px">
-          ${{series.map((line) => `<polyline fill="none" stroke="${{line.color}}" stroke-width="2.2" points="${{line.points}}"></polyline>`).join('')}}
-          ${{ticks.map((year) => {{
-            const x = years.length === 1 ? 0 : (years.indexOf(year) / Math.max(years.length - 1, 1)) * 100;
-            return `<text x="${{x}}" y="108" font-size="4" text-anchor="middle" fill="#52606d">${{year}}</text>`;
+        <svg viewBox="0 0 ${{width}} ${{height}}" class="distribution-viz" preserveAspectRatio="none" aria-label="Theme timeline">
+          <line x1="${{margin.left}}" y1="${{height - margin.bottom}}" x2="${{width - margin.right}}" y2="${{height - margin.bottom}}" stroke="#6b7280" stroke-width="1.2"></line>
+          <line x1="${{margin.left}}" y1="${{margin.top}}" x2="${{margin.left}}" y2="${{height - margin.bottom}}" stroke="#6b7280" stroke-width="1.2"></line>
+          ${{yTicks.map((ratio) => {{
+            const y = margin.top + innerHeight - (ratio * innerHeight);
+            const value = Math.round(max * ratio);
+            return `
+              <line x1="${{margin.left}}" y1="${{y.toFixed(2)}}" x2="${{width - margin.right}}" y2="${{y.toFixed(2)}}" stroke="#ebe3d4" stroke-width="1"></line>
+              <text x="${{margin.left - 10}}" y="${{(y + 4).toFixed(2)}}" text-anchor="end" font-size="12" fill="#52606d">${{fmtNumber(value)}}</text>
+            `;
           }}).join('')}}
+          ${{tickIndexes.map((index) => {{
+            const x = xForYear(index);
+            const year = years[index];
+            return `
+              <line x1="${{x.toFixed(2)}}" y1="${{height - margin.bottom}}" x2="${{x.toFixed(2)}}" y2="${{height - margin.bottom + 6}}" stroke="#9ca3af" stroke-width="1"></line>
+              <text x="${{x.toFixed(2)}}" y="${{height - margin.bottom + 22}}" text-anchor="middle" font-size="12" fill="#52606d">${{year}}</text>
+            `;
+          }}).join('')}}
+          ${{series.map((line) => `<polyline fill="none" stroke="${{line.color}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${{line.points}}"></polyline>`).join('')}}
         </svg>
-        <div class="timeline-legend">${{series.map((line) => `<span class="timeline-item"><span class="timeline-swatch" style="background:${{line.color}}"></span>${{line.theme}}</span>`).join('')}}</div>
-        <div class="insight">This timeline shows how the most recurrent recovered themes accumulate across publication years. Use it to detect whether a theme is historically foundational, steadily persistent, or a recent growth area.</div>
+        <div class="timeline-legend">${{series.map((line) => `<span class="timeline-item"><span class="timeline-swatch" style="background:${{line.color}}"></span>${{line.theme}} (${{fmtNumber(line.total)}})</span>`).join('')}}</div>
+        <div class="insight">This timeline tracks annual article counts for the most recurrent recovered themes. Read it as a temporal profile: a theme can be historically foundational, steadily persistent, episodic, or clearly expanding in recent years. The final year shown is <strong>${{years[years.length - 1]}}</strong>.</div>
       `;
     }};
     const interpretationGuide = (summary) => `
       <div class="insight"><strong>Publication year:</strong> read mean and median together. If both are recent, the classified literature is concentrated in the last decade; if the mean is much older than the median, the corpus has a historical tail.</div>
-      <div class="insight"><strong>References per article:</strong> the median is the best “typical article” indicator. The mean becomes larger when a smaller set of review-style or theory-heavy papers cite very extensively.</div>
+      <div class="insight"><strong>References per article:</strong> the median is usually the best "typical article" indicator. The mean becomes larger when a smaller set of review-style or theory-heavy papers cite very extensively.</div>
       <div class="insight"><strong>Keywords and themes:</strong> keywords tell us what authors and indexers declared; recovered themes are a curated analytical layer used to compare labels, years, and trajectories.</div>
       <div class="insight"><strong>Cited authors:</strong> use the heatmaps and top cited-author views to identify intellectual anchors, but always check that the parser is surfacing actual people rather than books or journals.</div>
       <div class="insight"><strong>Network previews:</strong> they are bounded summaries for readability. The CSV and GraphML exports preserve the larger graph for deeper analysis.</div>
@@ -991,12 +1103,13 @@ def _interactive_html(payload: dict[str, object]) -> str:
     `;
     document.getElementById('descriptiveProfiles').innerHTML = metricCards(payload.descriptive_profiles || []) +
       (payload.descriptive_profiles || []).map((row) => metricInsight(row.metric, row, summary.total_articles)).join('');
+    const profilesByMetric = profileByMetric(payload.descriptive_profiles || []);
     document.getElementById('distributionCharts').innerHTML = [
-      distributionBlock('Publication year', payload.distribution_snapshots?.publication_year || []),
-      distributionBlock('References per article', payload.distribution_snapshots?.references_per_article || []),
-      distributionBlock('Authors per article', payload.distribution_snapshots?.authors_per_article || []),
-      distributionBlock('Keywords per article', payload.distribution_snapshots?.keywords_per_article || []),
-      distributionBlock('Abstract words', payload.distribution_snapshots?.abstract_word_count || []),
+      distributionBlock('Publication year', payload.distribution_snapshots?.publication_year || [], profilesByMetric['Publication year']),
+      distributionBlock('References per article', payload.distribution_snapshots?.references_per_article || [], profilesByMetric['References per article']),
+      distributionBlock('Authors per article', payload.distribution_snapshots?.authors_per_article || [], profilesByMetric['Authors per article']),
+      distributionBlock('Keywords per article', payload.distribution_snapshots?.keywords_per_article || [], profilesByMetric['Keywords per article']),
+      distributionBlock('Abstract words', payload.distribution_snapshots?.abstract_word_count || [], profilesByMetric['Abstract words']),
     ].join('');
     document.getElementById('themeLabelHeatmap').innerHTML = heatmap(payload.theme_label_heatmap, 'Theme ');
     document.getElementById('authorLabelHeatmap').innerHTML = heatmap(payload.author_label_heatmap, 'Author ');
@@ -1015,7 +1128,7 @@ def _interactive_html(payload: dict[str, object]) -> str:
       const note = authorMode.value === 'cited'
         ? `<div class="kpi-note">Showing a ranked interactive slice of ${{fmtNumber(payload.cited_author_rows.length)}} cited authors out of ${{fmtNumber(payload.cited_author_total_rows)}} total. Use the full cited-author CSV export for exhaustive inspection.</div>`
         : `<div class="kpi-note">Showing all ${{fmtNumber(payload.corpus_author_rows.length)}} corpus authors available in this bundle.</div>`;
-      document.getElementById('authorsTable').innerHTML = note + table(rows, columns);
+      document.getElementById('authorsTable').innerHTML = note + table(rows, columns, {{ maxHeight: 980 }});
     }};
     authorMode.addEventListener('change', renderAuthors);
     authorSearch.addEventListener('input', renderAuthors);
