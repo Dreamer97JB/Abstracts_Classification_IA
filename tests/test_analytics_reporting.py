@@ -56,6 +56,8 @@ def test_analytics_reporting_writes_reports_without_networks(project_root: Path,
     assert "Descriptive profiles" in interactive
     assert "Heatmaps" in interactive
     assert "Temporal evolution" in interactive
+    assert "Theme timeline" in interactive
+    assert "Interpretation guide" in interactive
     assert "Network outputs are not available" in interactive
     assert "<html" in html.lower()
 

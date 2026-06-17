@@ -372,6 +372,7 @@ def _build_report_payload(
             total=int(stats.get("total_articles", 0)),
         ),
         "distribution_snapshots": stats.get("distribution_snapshots", {}),
+        "theme_year_timeline": stats.get("theme_year_timeline", []),
         "theme_label_heatmap": _heatmap_rows(
             bibliometric_artifacts.theme_label_matrix,
             row_column="theme",
@@ -389,6 +390,9 @@ def _build_report_payload(
             top_columns=max(config.report.top_n_themes, 6),
         ),
         "label_year_heatmap": _year_label_heatmap_rows(bibliometric_artifacts.enriched_rows),
+        "corpus_author_rows": bibliometric_artifacts.corpus_author_frequency.to_dict(orient="records"),
+        "cited_author_rows": bibliometric_artifacts.cited_author_frequency.head(5000).to_dict(orient="records"),
+        "cited_author_total_rows": int(len(bibliometric_artifacts.cited_author_frequency)),
         "top_corpus_authors": bibliometric_artifacts.corpus_author_frequency.head(
             config.report.top_n_authors
         ).to_dict(orient="records"),
@@ -648,6 +652,11 @@ def _interactive_html(payload: dict[str, object]) -> str:
     .tag {{ display: inline-block; padding: 4px 8px; border-radius: 999px; background: #e6f4ea; color: #1b4332; font-size: 12px; }}
     .empty {{ padding: 16px; border: 1px dashed #c9c1b2; border-radius: 12px; background: #faf7f0; }}
     .kpi-note {{ margin-top: 10px; color: #52606d; font-size: 14px; }}
+    .insight {{ padding: 12px 14px; border-radius: 12px; background: #f7f2e8; border: 1px solid #e2d7c5; margin-top: 10px; color: #29434e; }}
+    .insight strong {{ color: #102a43; }}
+    .timeline-legend {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }}
+    .timeline-item {{ display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #35505a; }}
+    .timeline-swatch {{ width: 12px; height: 12px; border-radius: 999px; }}
     a {{ color: var(--accent); }}
     @media (max-width: 900px) {{
       .grid-2 {{ grid-template-columns: 1fr; }}
@@ -697,8 +706,20 @@ def _interactive_html(payload: dict[str, object]) -> str:
     </section>
     <section class="grid-2">
       <div class="panel">
+        <h2>Theme timeline</h2>
+        <p class="muted">Evolution over time of the most discussed themes recovered in the corpus.</p>
+        <div id="themeTimeline"></div>
+      </div>
+      <div class="panel">
+        <h2>Interpretation guide</h2>
+        <p class="muted">What these descriptive metrics mean, and how to read them in research terms.</p>
+        <div id="interpretationGuide"></div>
+      </div>
+    </section>
+    <section class="grid-2">
+      <div class="panel">
         <h2>Authors</h2>
-        <p class="muted">Switch between article authors and cited authors, then search within the visible table.</p>
+        <p class="muted">Search across all corpus authors. Cited authors are shown as a curated ranked slice here, with the full exported CSV linked below because the complete cited-author universe is very large.</p>
         <div class="controls">
           <label>Author table:
             <select id="authorMode">
@@ -709,6 +730,11 @@ def _interactive_html(payload: dict[str, object]) -> str:
           <label>Search:
             <input id="authorSearch" placeholder="Type an author name">
           </label>
+        </div>
+        <div class="kpi-note">
+          Full exports:
+          <a href="data/author_frequency.csv">Corpus authors CSV</a> |
+          <a href="data/cited_author_frequency.csv">Cited authors CSV</a>
         </div>
         <div id="authorsTable"></div>
       </div>
@@ -755,6 +781,7 @@ def _interactive_html(payload: dict[str, object]) -> str:
     const payload = {serialized};
     const fmtPct = (value) => `${{(value * 100).toFixed(2)}}%`;
     const fmtNumber = (value) => typeof value === 'number' ? value.toLocaleString('en-US') : value;
+    const palette = ['#0f766e', '#d97706', '#2563eb', '#a21caf', '#b91c1c', '#0891b2', '#65a30d', '#7c3aed'];
     const table = (rows, columns) => {{
       if (!rows.length) return '<div class="empty">None available for this view.</div>';
       const head = `<tr>${{columns.map((c) => `<th>${{c}}</th>`).join('')}}</tr>`;
@@ -797,6 +824,19 @@ def _interactive_html(payload: dict[str, object]) -> str:
         </div>
       `).join('')}}</div>`;
     }};
+    const metricInsight = (metric, row, totalArticles) => {{
+      if (!row) return '';
+      const count = row.count ?? 0;
+      const coverage = totalArticles ? fmtPct(count / totalArticles) : '0.00%';
+      const messages = {{
+        'Publication year': `This uses ${{fmtNumber(count)}} articles with year metadata, covering ${{coverage}} of the classified corpus. The mean year tells us the center of gravity of the literature, while the median shows the typical publication year without being distorted by older tail records.`,
+        'Authors per article': `This counts named corpus authors per article across ${{fmtNumber(count)}} records. The mean reflects overall collaboration intensity, while the median reveals what a typical article looks like in practice.`,
+        'References per article': `This measures bibliography size article by article across the full corpus. The mean is useful for overall citation density, while the median is usually the better indicator of a typical article because very long reference lists can pull the average upward.`,
+        'Keywords per article': `This reflects declared author keywords plus index keywords per article. It is a quick proxy for metadata richness and thematic self-description.`,
+        'Abstract words': `This measures abstract length. The median helps us understand the common reporting style, while the max shows how heterogeneous abstract writing becomes across journals and periods.`,
+      }};
+      return `<div class="insight"><strong>${{metric}}:</strong> ${{messages[metric] || ''}}</div>`;
+    }};
     const distributionBlock = (title, rows) => {{
       if (!rows?.length) return '';
       const max = Math.max(...rows.map((row) => row.count || 0), 1);
@@ -811,6 +851,7 @@ def _interactive_html(payload: dict[str, object]) -> str:
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:90px;margin-bottom:10px;background:linear-gradient(180deg,#f8f5ee,#fff);border:1px solid #e5dccd;border-radius:10px">
             <polyline fill="none" stroke="#d97706" stroke-width="2.5" points="${{points}}"></polyline>
           </svg>
+          <div class="insight">${{distributionInsight(title, rows)}}</div>
           <div class="bars">${{rows.slice(0, 18).map((row) => `
             <div class="bar-row">
               <div>${{row.bucket}}</div>
@@ -820,6 +861,21 @@ def _interactive_html(payload: dict[str, object]) -> str:
           `).join('')}}</div>
         </div>
       `;
+    }};
+    const distributionInsight = (title, rows) => {{
+      if (!rows?.length) return 'No distributional evidence is available for this variable.';
+      const sorted = [...rows].sort((a, b) => (b.count || 0) - (a.count || 0));
+      const dominant = sorted[0];
+      const last = rows[rows.length - 1];
+      const first = rows[0];
+      const messages = {{
+        'Publication year': `The tallest bar is around <strong>${{dominant.bucket}}</strong>, which helps locate the most concentrated publication period. Read this together with the median year to see whether the corpus is historically recent or more evenly spread.`,
+        'References per article': `The most common reference bucket is <strong>${{dominant.bucket}}</strong>. Compare the dense central buckets against the right tail to see whether a small number of review-like papers are inflating the average reference count.`,
+        'Authors per article': `The modal collaboration size is <strong>${{dominant.bucket}}</strong>. If the first buckets dominate heavily, the corpus is being produced mostly by solo or small-team authorship.`,
+        'Keywords per article': `The most common metadata richness bucket is <strong>${{dominant.bucket}}</strong>. This helps gauge how much thematic self-description authors and indexers are providing.`,
+        'Abstract words': `The most common abstract-length bucket is <strong>${{dominant.bucket}}</strong>. The distance between <strong>${{first.bucket}}</strong> and <strong>${{last.bucket}}</strong> shows how heterogeneous abstract writing conventions are across the corpus.`,
+      }};
+      return messages[title] || `The most common bucket here is <strong>${{dominant.bucket}}</strong>.`;
     }};
     const heatmap = (payload, labelPrefix = '') => {{
       const rows = payload?.rows || [];
@@ -847,6 +903,45 @@ def _interactive_html(payload: dict[str, object]) -> str:
       }});
       return `<div class="heatmap-wrap"><div class="heatmap" style="grid-template-columns:${{templateColumns}}">${{cells.join('')}}</div></div>`;
     }};
+    const themeTimeline = (rows) => {{
+      if (!rows?.length) return '<div class="empty">No theme timeline is available for this run.</div>';
+      const themes = [...new Set(rows.map((row) => row.theme))].slice(0, 8);
+      const years = [...new Set(rows.map((row) => row.year))].sort((a, b) => a - b);
+      const max = Math.max(...rows.map((row) => row.article_count || 0), 1);
+      const series = themes.map((theme, index) => {{
+        const points = years.map((year, yearIndex) => {{
+          const match = rows.find((row) => row.theme === theme && row.year === year);
+          const value = match?.article_count || 0;
+          const x = years.length === 1 ? 0 : (yearIndex / Math.max(years.length - 1, 1)) * 100;
+          const y = 100 - ((value / max) * 100);
+          return `${{x}},${{y}}`;
+        }}).join(' ');
+        return {{
+          theme,
+          color: palette[index % palette.length],
+          points,
+        }};
+      }});
+      const ticks = years.filter((_year, index) => index % Math.max(1, Math.floor(years.length / 8)) === 0);
+      return `
+        <svg viewBox="0 0 100 110" preserveAspectRatio="none" style="width:100%;height:240px;background:linear-gradient(180deg,#fbf8f2,#fff);border:1px solid #e5dccd;border-radius:12px">
+          ${{series.map((line) => `<polyline fill="none" stroke="${{line.color}}" stroke-width="2.2" points="${{line.points}}"></polyline>`).join('')}}
+          ${{ticks.map((year) => {{
+            const x = years.length === 1 ? 0 : (years.indexOf(year) / Math.max(years.length - 1, 1)) * 100;
+            return `<text x="${{x}}" y="108" font-size="4" text-anchor="middle" fill="#52606d">${{year}}</text>`;
+          }}).join('')}}
+        </svg>
+        <div class="timeline-legend">${{series.map((line) => `<span class="timeline-item"><span class="timeline-swatch" style="background:${{line.color}}"></span>${{line.theme}}</span>`).join('')}}</div>
+        <div class="insight">This timeline shows how the most recurrent recovered themes accumulate across publication years. Use it to detect whether a theme is historically foundational, steadily persistent, or a recent growth area.</div>
+      `;
+    }};
+    const interpretationGuide = (summary) => `
+      <div class="insight"><strong>Publication year:</strong> read mean and median together. If both are recent, the classified literature is concentrated in the last decade; if the mean is much older than the median, the corpus has a historical tail.</div>
+      <div class="insight"><strong>References per article:</strong> the median is the best “typical article” indicator. The mean becomes larger when a smaller set of review-style or theory-heavy papers cite very extensively.</div>
+      <div class="insight"><strong>Keywords and themes:</strong> keywords tell us what authors and indexers declared; recovered themes are a curated analytical layer used to compare labels, years, and trajectories.</div>
+      <div class="insight"><strong>Cited authors:</strong> use the heatmaps and top cited-author views to identify intellectual anchors, but always check that the parser is surfacing actual people rather than books or journals.</div>
+      <div class="insight"><strong>Network previews:</strong> they are bounded summaries for readability. The CSV and GraphML exports preserve the larger graph for deeper analysis.</div>
+    `;
 
     const summary = payload.summary;
     const themeCoverage = payload.theme_assignment_rows || [];
@@ -894,7 +989,8 @@ def _interactive_html(payload: dict[str, object]) -> str:
         </div>
       </div>
     `;
-    document.getElementById('descriptiveProfiles').innerHTML = metricCards(payload.descriptive_profiles || []);
+    document.getElementById('descriptiveProfiles').innerHTML = metricCards(payload.descriptive_profiles || []) +
+      (payload.descriptive_profiles || []).map((row) => metricInsight(row.metric, row, summary.total_articles)).join('');
     document.getElementById('distributionCharts').innerHTML = [
       distributionBlock('Publication year', payload.distribution_snapshots?.publication_year || []),
       distributionBlock('References per article', payload.distribution_snapshots?.references_per_article || []),
@@ -905,16 +1001,21 @@ def _interactive_html(payload: dict[str, object]) -> str:
     document.getElementById('themeLabelHeatmap').innerHTML = heatmap(payload.theme_label_heatmap, 'Theme ');
     document.getElementById('authorLabelHeatmap').innerHTML = heatmap(payload.author_label_heatmap, 'Author ');
     document.getElementById('labelYearHeatmap').innerHTML = heatmap(payload.label_year_heatmap, 'Year ');
+    document.getElementById('themeTimeline').innerHTML = themeTimeline(payload.theme_year_timeline || []);
+    document.getElementById('interpretationGuide').innerHTML = interpretationGuide(summary);
 
     const authorMode = document.getElementById('authorMode');
     const authorSearch = document.getElementById('authorSearch');
     const renderAuthors = () => {{
-      const baseRows = authorMode.value === 'corpus' ? payload.top_corpus_authors : payload.top_cited_authors;
+      const baseRows = authorMode.value === 'corpus' ? payload.corpus_author_rows : payload.cited_author_rows;
       const rows = filterRows(baseRows, authorSearch.value, ['author_display']);
       const columns = authorMode.value === 'corpus'
         ? ['author_display', 'corpus_author_count', 'article_count']
         : ['author_display', 'cited_author_count', 'article_citation_coverage'];
-      document.getElementById('authorsTable').innerHTML = table(rows, columns);
+      const note = authorMode.value === 'cited'
+        ? `<div class="kpi-note">Showing a ranked interactive slice of ${{fmtNumber(payload.cited_author_rows.length)}} cited authors out of ${{fmtNumber(payload.cited_author_total_rows)}} total. Use the full cited-author CSV export for exhaustive inspection.</div>`
+        : `<div class="kpi-note">Showing all ${{fmtNumber(payload.corpus_author_rows.length)}} corpus authors available in this bundle.</div>`;
+      document.getElementById('authorsTable').innerHTML = note + table(rows, columns);
     }};
     authorMode.addEventListener('change', renderAuthors);
     authorSearch.addEventListener('input', renderAuthors);

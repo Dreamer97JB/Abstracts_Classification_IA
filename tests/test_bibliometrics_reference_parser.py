@@ -103,3 +103,17 @@ def test_reference_parser_exports_failed_rows(project_root: Path) -> None:
     )
 
     assert parsed.loc[0, "parse_confidence"] == "FAILED"
+
+
+def test_reference_parser_keeps_author_not_book_title() -> None:
+    assert split_reference_authors("Latour B., Science in Action: How to Follow Scientists and Engineers Through Society") == (
+        "Latour B",
+    )
+    assert split_reference_authors("Bloor D., Knowledge and Social Imagery") == (
+        "Bloor D",
+    )
+
+
+def test_reference_parser_avoids_journal_as_author() -> None:
+    assert split_reference_authors("Environment and Planning D: Society and Space") == ()
+    assert split_reference_authors("Planning D: Society & Space") == ()

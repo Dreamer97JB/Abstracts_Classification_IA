@@ -42,3 +42,4 @@ def test_interactive_bundle_writes_data_exports(project_root: Path, tmp_path: Pa
     assert "Descriptive profiles" in html
     assert "Corpus distributions" in html
     assert "Heatmaps" in html
+    assert "Theme timeline" in html

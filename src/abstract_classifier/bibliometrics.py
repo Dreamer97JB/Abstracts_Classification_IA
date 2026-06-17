@@ -29,6 +29,9 @@ _SURNAME_INITIALS_RE = re.compile(
 _INITIALS_SURNAME_RE = re.compile(
     r"(?:[A-Z]\.\s*){1,4}[A-ZÀ-ÿ][A-Za-zÀ-ÿ'`\-]+(?:\s+[A-ZÀ-ÿ][A-Za-zÀ-ÿ'`\-]+)*"
 )
+_SURNAME_TRAILING_INITIALS_RE = re.compile(
+    r"\b[A-ZÀ-ÿ][A-Za-zÀ-ÿ'`\-]+(?:\s+[A-ZÀ-ÿ][A-Za-zÀ-ÿ'`\-]+)*\s+(?:[A-Z](?:\.[A-Z]?\.?)*|[A-Z]{1,3})\b"
+)
 _SPLIT_NUMBERED_REFS_RE = re.compile(r"(?=(?:\[\d+\]|\d+\.)\s)")
 _GENERIC_THEME_TERMS = {
     "article",
@@ -451,14 +454,28 @@ def split_reference_authors(author_segment: str) -> tuple[str, ...]:
 
     candidates = [normalize_author_name(value) for value in _SURNAME_INITIALS_RE.findall(segment)]
     if candidates:
-        return tuple(dict.fromkeys(value for value in candidates if value))
+        return tuple(dict.fromkeys(value for value in candidates if _is_plausible_author_candidate(value)))
 
     candidates = [normalize_author_name(value) for value in _INITIALS_SURNAME_RE.findall(segment)]
     if candidates:
-        return tuple(dict.fromkeys(value for value in candidates if value))
+        return tuple(dict.fromkeys(value for value in candidates if _is_plausible_author_candidate(value)))
+
+    candidates = []
+    for match in _SURNAME_TRAILING_INITIALS_RE.finditer(segment):
+        end = match.end()
+        next_character = segment[end:end + 1]
+        if next_character not in {"", ".", ",", ";", "&", "("}:
+            continue
+        candidates.append(normalize_author_name(match.group(0)))
+    if candidates:
+        return tuple(dict.fromkeys(value for value in candidates if _is_plausible_author_candidate(value)))
 
     fallback_parts = re.split(r"\s*(?:&| and |;)\s*", segment)
-    normalized_parts = [normalize_author_name(part) for part in fallback_parts if normalize_author_name(part)]
+    normalized_parts = [
+        normalize_author_name(part)
+        for part in fallback_parts
+        if _is_plausible_author_candidate(normalize_author_name(part))
+    ]
     return tuple(dict.fromkeys(normalized_parts))
 
 
@@ -840,6 +857,11 @@ def build_descriptive_stats(
     if not cited_author_frequency.empty:
         top_cited_authors = cited_author_frequency.head(10).to_dict(orient="records")
 
+    top_theme_names = [
+        theme
+        for theme, _count in sorted(themes_distribution.items(), key=lambda item: (-item[1], item[0]))[:10]
+    ]
+
     return {
         "total_articles": total_articles,
         "articles_with_abstract": sum(1 for record in records if record.abstract.strip()),
@@ -871,6 +893,7 @@ def build_descriptive_stats(
             "keywords_per_article": _exact_distribution(keywords_per_article),
             "abstract_word_count": _binned_distribution(abstract_word_count, bin_size=50),
         },
+        "theme_year_timeline": _theme_year_timeline(records, selected_themes=tuple(top_theme_names)),
     }
 
 
@@ -1286,6 +1309,28 @@ def _binned_distribution(values: list[int], *, bin_size: int) -> list[dict[str, 
     return rows
 
 
+def _theme_year_timeline(
+    records: list[BibliometricRecord],
+    *,
+    selected_themes: tuple[str, ...],
+) -> list[dict[str, object]]:
+    if not records or not selected_themes:
+        return []
+    counts: dict[tuple[int, str], int] = {}
+    for record in records:
+        if record.year is None:
+            continue
+        for theme in record.themes:
+            if theme not in selected_themes:
+                continue
+            key = (int(record.year), theme)
+            counts[key] = counts.get(key, 0) + 1
+    rows: list[dict[str, object]] = []
+    for (year, theme), count in sorted(counts.items(), key=lambda item: (item[0][0], item[0][1])):
+        rows.append({"year": year, "theme": theme, "article_count": count})
+    return rows
+
+
 def _is_meaningful_theme(theme: str) -> bool:
     if not theme or theme in _GENERIC_THEME_TERMS:
         return False
@@ -1479,6 +1524,32 @@ def _author_has_signal(author: str, *, min_token_length: int) -> bool:
         return False
     tokens = [token.strip(".") for token in author.split()]
     return any(len(token) >= min_token_length for token in tokens)
+
+
+def _is_plausible_author_candidate(author: str) -> bool:
+    if not author:
+        return False
+    tokens = [token.strip("., ") for token in author.split() if token.strip("., ")]
+    if not tokens:
+        return False
+    if len(tokens) > 4:
+        return False
+    has_initial = any(
+        len(token.replace(".", "")) <= 3 and token.replace(".", "").isupper()
+        for token in tokens
+    )
+    has_name = any(len(token) >= 3 and any(character.isalpha() for character in token) for token in tokens)
+    if "," in author:
+        surname, _rest = [part.strip() for part in author.split(",", 1)]
+        if len(surname) < 2:
+            return False
+        return has_initial
+    if len(tokens) < 2 or not has_initial or not has_name:
+        return False
+    initial_like = lambda token: token.replace(".", "").isupper() and len(token.replace(".", "")) <= 3
+    first_is_initials = all(initial_like(token) for token in tokens[:-1]) and len(tokens[-1]) >= 3
+    last_is_initial = initial_like(tokens[-1]) and any(len(token) >= 3 for token in tokens[:-1])
+    return first_is_initials or last_is_initial
 
 
 def _label_totals(records: list[BibliometricRecord]) -> dict[str, int]:
