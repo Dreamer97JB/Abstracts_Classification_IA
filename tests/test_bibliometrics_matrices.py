@@ -94,3 +94,26 @@ def test_bibliometrics_derives_themes_from_keywords_when_missing(project_root: P
     assert not outputs.theme_label_matrix.empty
     assert "science policy" in set(outputs.theme_label_matrix["theme"])
     assert outputs.descriptive_stats["theme_assignment_summary"]["articles_with_derived_keyword_themes"] == 2
+
+
+def test_bibliometrics_filters_non_meaningful_derived_themes(project_root: Path) -> None:
+    config = load_bibliometric_config(root=project_root)
+    frame = pd.DataFrame(
+        [
+            {
+                "record_id": "r1",
+                "title": "AI and expertise",
+                "abstract": "Research on knowledge systems",
+                "authors": "Alpha, A.",
+                "references": "Latour, B. (2005). Reassembling the social.",
+                "author_keywords": "book; expertise; 2024",
+                "index_keywords": "chapter",
+                "predicted_canonical_id": "tipo_1",
+                "predicted_label_canonica": "Tipo 1",
+            }
+        ]
+    )
+
+    outputs = build_bibliometric_outputs(frame, config=config)
+
+    assert set(outputs.theme_label_matrix["theme"]) == {"expertise"}

@@ -32,14 +32,25 @@ _INITIALS_SURNAME_RE = re.compile(
 _SPLIT_NUMBERED_REFS_RE = re.compile(r"(?=(?:\[\d+\]|\d+\.)\s)")
 _GENERIC_THEME_TERMS = {
     "article",
+    "article",
     "adult",
     "adults",
+    "book",
+    "books",
+    "chapter",
+    "chapters",
+    "editorial",
     "female",
     "females",
     "human",
     "humans",
     "male",
     "males",
+    "paper",
+    "papers",
+    "review",
+    "reviews",
+    "scientific",
 }
 
 
@@ -772,7 +783,7 @@ def _normalize_themes(values: tuple[str, ...], *, limit: int) -> tuple[str, ...]
     seen: set[str] = set()
     for value in values:
         theme = _normalize_term(value)
-        if not theme or theme in _GENERIC_THEME_TERMS or theme in seen:
+        if not _is_meaningful_theme(theme) or theme in seen:
             continue
         seen.add(theme)
         normalized.append(theme)
@@ -1143,7 +1154,7 @@ def _build_record_tfidf_terms(
         seen_keys: set[str] = set()
         for feature_index, _score in score_pairs:
             theme = _normalize_term(str(feature_names[feature_index]))
-            if not theme or theme in _GENERIC_THEME_TERMS or theme in seen_keys:
+            if not _is_meaningful_theme(theme) or theme in seen_keys:
                 continue
             seen_keys.add(theme)
             seen.append(theme)
@@ -1273,6 +1284,22 @@ def _binned_distribution(values: list[int], *, bin_size: int) -> list[dict[str, 
             }
         )
     return rows
+
+
+def _is_meaningful_theme(theme: str) -> bool:
+    if not theme or theme in _GENERIC_THEME_TERMS:
+        return False
+    if not any(character.isalpha() for character in theme):
+        return False
+    if len(theme) < 3:
+        return False
+    tokens = [token for token in theme.split() if token]
+    if not tokens:
+        return False
+    numeric_tokens = sum(1 for token in tokens if token.isdigit())
+    if numeric_tokens == len(tokens):
+        return False
+    return True
 
 
 def _extract_record_themes(
