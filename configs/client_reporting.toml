@@ -1,0 +1,6 @@
+version = "1"
+top_n_terms = 25
+top_n_authors = 25
+top_n_references = 25
+min_term_frequency = 1
+min_reference_token_length = 3

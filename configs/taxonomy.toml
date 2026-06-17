@@ -1,0 +1,38 @@
+version = "1"
+source_of_truth = "Article/Artículo_Arbor.pdf"
+
+[[classes]]
+order = 1
+id = "tipo_1_realismo_fuerte"
+label = "Tipo 1 - Realismo fuerte"
+article_label = "Realismo fuerte"
+
+[[classes]]
+order = 2
+id = "tipo_2_realismo_moderado_critico"
+label = "Tipo 2 - Realismo moderado / critico"
+article_label = "Realismo moderado / critico"
+
+[[classes]]
+order = 3
+id = "tipo_3_antirrealismo_epistemologico"
+label = "Tipo 3 - Antirrealismo epistemologico"
+article_label = "Antirrealismo epistemologico"
+
+[[classes]]
+order = 4
+id = "tipo_4_pragmatismo_epistemologico"
+label = "Tipo 4 - Pragmatismo epistemologico"
+article_label = "Pragmatismo epistemologico"
+
+[[classes]]
+order = 5
+id = "tipo_5_constructivismo_moderado"
+label = "Tipo 5 - Constructivismo moderado"
+article_label = "Constructivismo moderado"
+
+[[classes]]
+order = 6
+id = "tipo_6_constructivismo_fuerte_relativismo"
+label = "Tipo 6 - Constructivismo fuerte / relativismo"
+article_label = "Constructivismo fuerte / relativismo"

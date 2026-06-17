@@ -1,0 +1,68 @@
+version = "1"
+
+trusted_source_artifact = "reports/tmp_phase6/trust_smoke/trusted_production_corpus.csv"
+prediction_artifact = "reports/phase10/scopus_only_predict/predictions.csv"
+promotion_gate_artifact = "reports/tmp_phase8/calibration_smoke/promotion_gate.json"
+preferred_source_order = ["scopus_base", "google_corpus"]
+minimum_abstract_words = 80
+minimum_abstract_characters = 400
+minimum_calibrated_prediction_score = 0.60
+minimum_prediction_margin = 0.08
+fallback_score_threshold = 0.75
+fallback_margin_threshold = 0.12
+weak_class_score_threshold = 0.82
+weak_class_margin_threshold = 0.14
+minimum_admitted_rows = 30
+max_global_class_share = 0.35
+pseudo_label_wave_id = "wave_phase10_strict_self_training"
+teacher_run_id = "gold_v6_wave06_sentence_rocm"
+gold_supervision_artifact = "reports/tmp_phase9/gold_v6_wave06/phase2_gold_supervision_v6_wave06.csv"
+split_artifact = "reports/tmp_phase9/gold_v6_wave06/phase2_split_assignments_v6_wave06.csv"
+metrics_per_class_artifact = "reports/tmp_phase9/gold_v6_wave06/runs/gold_v6_wave06_sentence_rocm/metrics_per_class.csv"
+default_output_root = "reports/phase10/gold_final/runs"
+champion_run_dir = "reports/tmp_phase9/gold_v6_wave06/runs/gold_v6_wave06_sentence_rocm"
+trusted_production_artifact = "reports/tmp_phase6/trust_smoke/trusted_production_corpus.csv"
+phase5_predictions_reference = "reports/phase5/full_corpus_inference_keywords/predictions.csv"
+
+taxonomy_config = "configs/taxonomy.toml"
+supervision_config = "configs/supervision.toml"
+gold_artifact = "reports/tmp_phase9/gold_v6_wave06/phase2_gold_supervision_v6_wave06.csv"
+default_text_variant = "title_abstract_plus_keywords"
+model_family = "sentence_transformer_logreg"
+comparison_variants = ["abstract_only", "abstract_plus_keywords", "title_abstract_plus_keywords"]
+candidate_model_families = ["tfidf_char_wb_logreg", "tfidf_svd_logreg", "sentence_transformer_logreg"]
+baseline_anchor_run_dir = "reports/tmp_phase9/gold_v6_wave06/runs/gold_v6_wave06_sentence_rocm"
+baseline_anchor_predictions = "reports/phase10/scopus_only_predict/predictions.csv"
+trusted_experiment_artifact = "reports/tmp_phase6/trust_smoke/trusted_experiment_corpus.csv"
+
+[pseudo_training]
+training_mode = "gold_plus_pseudo"
+gold_weight = 1.0
+pseudo_weight = 0.25
+pseudo_admitted_csv = "reports/phase10/self_training_stage_d/pseudo_admitted_strict.csv"
+pseudo_policy_json = "reports/phase10/self_training_stage_d/pseudo_policy_strict.json"
+
+[training]
+max_features = 12000
+ngram_min = 1
+ngram_max = 2
+min_df = 1
+max_iter = 2500
+class_weight = "balanced"
+random_state = 20260520
+char_ngram_min = 3
+char_ngram_max = 5
+svd_components = 128
+sentence_transformer_model_name = "sentence-transformers/all-MiniLM-L6-v2"
+sentence_batch_size = 32
+
+[evaluation]
+default_split = "test"
+required_retained_accuracy = 0.70
+required_coverage_rate = 0.15
+
+[runtime]
+target_environment = "windows_cpu"
+target_device = "cpu"
+runtime_budget_hours = 5.0
+wsl_distribution = "Ubuntu-24.04"

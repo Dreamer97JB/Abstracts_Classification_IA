@@ -1,0 +1,12 @@
+version = "1"
+phase5_inference_input = "reports/phase5/full_corpus_inference_keywords/inference_input.csv"
+phase5_overlap_review = "reports/phase5/full_corpus_inference_keywords/overlap_manual_review.csv"
+phase5_summary = "reports/phase5/full_corpus_inference_keywords/corpus_summary.json"
+default_output_root = "reports/phase6"
+
+[rules]
+min_abstract_words = 80
+experiment_min_metadata_fields = 2
+production_min_metadata_fields = 3
+exclude_ambiguous_overlap = true
+production_requires_year = true

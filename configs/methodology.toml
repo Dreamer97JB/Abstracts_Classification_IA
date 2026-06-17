@@ -1,0 +1,25 @@
+version = "1"
+
+[[branches]]
+label = "NN"
+branch = "NN"
+is_empirical = false
+allowed_subtypes = []
+
+[[branches]]
+label = "no_empirico"
+branch = "no_empirico"
+is_empirical = false
+allowed_subtypes = []
+
+[[branches]]
+label = "empirico"
+branch = "empirico"
+is_empirical = true
+allowed_subtypes = ["cualitativo", "cuantitativo"]
+
+[review_reasons]
+missing_source_columns = "missing_source_columns"
+insufficient_evidence = "insufficient_evidence"
+conflicting_cues = "conflicting_cues"
+unsupported_pattern = "unsupported_pattern"

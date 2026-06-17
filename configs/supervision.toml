@@ -1,0 +1,119 @@
+version = "1"
+taxonomy_config = "configs/taxonomy.toml"
+default_gold_source = "seed"
+
+[routing]
+training_default_bucket = "candidate_gold"
+evaluation_default_bucket = "manual_review"
+inference_default_bucket = "not_for_inference"
+
+[quality]
+min_abstract_words = 20
+
+[split_defaults]
+version = "phase2_v1"
+seed = 20260416
+train_ratio = 0.70
+val_ratio = 0.15
+test_ratio = 0.15
+
+[[sources]]
+name = "seed"
+source_dataset = "seed"
+workbook_path = "Seed/Seed.xlsx"
+sheet_name = "Clasificados"
+label_column = "Clasificacion"
+title_column = "Title"
+abstract_column = "Abstract"
+year_column = "Year"
+doi_column = "DOI"
+training_bucket = "candidate_gold"
+evaluation_bucket = "manual_review"
+inference_bucket = "not_for_inference"
+
+[[sources]]
+name = "muestras"
+source_dataset = "muestras"
+workbook_path = "Database/Scopus_database.xlsx"
+sheet_name = "Muestras"
+label_column = "Clasificacion"
+title_column = "Title"
+abstract_column = "Abstract"
+year_column = "Year"
+doi_column = "DOI"
+training_bucket = "candidate_gold"
+evaluation_bucket = "manual_review"
+inference_bucket = "not_for_inference"
+
+[[theory_mappings]]
+legacy_label = "Tipo 1 RF"
+mapping_status = "directo"
+canonical_id = "tipo_1_realismo_fuerte"
+mapping_notes = "Approved direct legacy label for the canonical Arbor contract."
+review_required = false
+
+[[theory_mappings]]
+legacy_label = "Tipo 2 RM"
+mapping_status = "fusionado"
+canonical_id = "tipo_2_realismo_moderado_critico"
+mapping_notes = "Approved alias merge into canonical Type 2."
+review_required = false
+
+[[theory_mappings]]
+legacy_label = "Tipo 2 RC"
+mapping_status = "fusionado"
+canonical_id = "tipo_2_realismo_moderado_critico"
+mapping_notes = "Approved alias merge into canonical Type 2."
+review_required = false
+
+[[theory_mappings]]
+legacy_label = "Tipo 3 AE"
+mapping_status = "directo"
+canonical_id = "tipo_3_antirrealismo_epistemologico"
+mapping_notes = "Approved direct legacy label for the canonical Arbor contract."
+review_required = false
+
+[[theory_mappings]]
+legacy_label = "Tipo 4 PE"
+mapping_status = "directo"
+canonical_id = "tipo_4_pragmatismo_epistemologico"
+mapping_notes = "Approved direct legacy label for the canonical Arbor contract."
+review_required = false
+
+[[theory_mappings]]
+legacy_label = "Tipo 5 CM"
+mapping_status = "directo"
+canonical_id = "tipo_5_constructivismo_moderado"
+mapping_notes = "Approved direct legacy label for the canonical Arbor contract."
+review_required = false
+
+[[theory_mappings]]
+legacy_label = "Tipo 6 CF - R"
+mapping_status = "directo"
+canonical_id = "tipo_6_constructivismo_fuerte_relativismo"
+mapping_notes = "Approved direct legacy label for the canonical Arbor contract."
+review_required = false
+
+[[theory_mappings]]
+legacy_label = "Tipo 6 RF"
+mapping_status = "revision_manual"
+mapping_notes = "Legacy label is unresolved and must stay in manual review."
+review_required = true
+
+[[theory_mappings]]
+legacy_label = "Tipo 4 CM"
+mapping_status = "revision_manual"
+mapping_notes = "Legacy label is unresolved and must stay in manual review."
+review_required = true
+
+[[theory_mappings]]
+legacy_label = "No"
+mapping_status = "sin_etiqueta"
+mapping_notes = "Explicitly marked as not labeled; exclude from gold and keep review-visible."
+review_required = true
+
+[[theory_mappings]]
+legacy_label = ""
+mapping_status = "sin_etiqueta"
+mapping_notes = "Blank legacy label; exclude from gold and keep review-visible."
+review_required = true

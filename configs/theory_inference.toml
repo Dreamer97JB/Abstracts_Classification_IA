@@ -1,0 +1,30 @@
+version = "1"
+source_manifest = "configs/sources.toml"
+default_output_root = "reports/phase5"
+default_source_datasets = ["scopus_base", "google_corpus"]
+trusted_production_artifact = "reports/tmp_phase6/trust_smoke/trusted_production_corpus.csv"
+promotion_gate_artifact = "reports/tmp_phase8/calibration_smoke/promotion_gate.json"
+
+[review]
+low_confidence_threshold = 0.45
+conflict_margin_threshold = 0.08
+abstention_policy_name = "default_phase5_review_gate"
+score_threshold = 0.45
+margin_threshold = 0.08
+abstention_mode = "score_and_margin"
+insufficient_signal_ood_threshold = 0.60
+out_of_scope_ood_threshold = 0.85
+out_of_scope_score_threshold = 0.25
+out_of_scope_margin_threshold = 0.03
+
+[[taxonomy_conflict_pairs]]
+left = "tipo_2_realismo_moderado_critico"
+right = "tipo_4_pragmatismo_epistemologico"
+
+[[taxonomy_conflict_pairs]]
+left = "tipo_2_realismo_moderado_critico"
+right = "tipo_5_constructivismo_moderado"
+
+[[taxonomy_conflict_pairs]]
+left = "tipo_3_antirrealismo_epistemologico"
+right = "tipo_6_constructivismo_fuerte_relativismo"

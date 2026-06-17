@@ -1,0 +1,21 @@
+version = "1"
+taxonomy_config = "configs/taxonomy.toml"
+supervision_config = "configs/supervision.toml"
+gold_artifact = "reports/phase2_gold_supervision.csv"
+split_artifact = "reports/phase2_split_assignments.csv"
+default_text_variant = "abstract_only"
+default_output_root = "reports/phase3"
+model_family = "tfidf_logreg"
+comparison_variants = ["abstract_only", "abstract_plus_keywords", "title_abstract_plus_keywords"]
+
+[training]
+max_features = 5000
+ngram_min = 1
+ngram_max = 2
+min_df = 1
+max_iter = 2000
+class_weight = "balanced"
+random_state = 20260416
+
+[evaluation]
+default_split = "test"

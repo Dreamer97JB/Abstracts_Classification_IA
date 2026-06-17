@@ -1,0 +1,45 @@
+version = "1"
+default_input_artifact = "reports/phase10/scopus_only_predict/predictions.csv"
+default_output_root = "reports/analytics/scopus"
+
+[columns]
+record_id = ["record_id"]
+title = ["title", "Title", "Article Title", "Título"]
+abstract = ["abstract", "Abstract", "Resumen"]
+authors = ["authors", "Authors", "Author full names", "Autores"]
+author_keywords = ["author_keywords", "Author Keywords", "Keywords"]
+index_keywords = ["index_keywords", "Index Keywords", "Indexed Keywords"]
+references = ["references", "References", "Cited References", "Bibliography", "Referencias"]
+doi = ["doi", "DOI"]
+year = ["year", "Year", "Publication Year", "Año"]
+label_id = ["predicted_canonical_id", "canonical_id", "label_id"]
+label_name = ["predicted_label_canonica", "label_canonica", "label_name"]
+theme = ["theme", "primary_theme"]
+themes = ["themes", "theme_labels"]
+
+[references]
+min_author_token_length = 3
+min_parse_confidence = "LOW"
+
+[themes]
+min_term_frequency = 1
+max_terms = 200
+ngram_min = 1
+ngram_max = 3
+tfidf_terms_per_record = 3
+
+[networks]
+min_edge_weight = 1
+max_nodes_html = 150
+compute_betweenness = false
+community_detection = false
+min_cited_author_article_coverage = 2
+max_cited_authors_per_article = 25
+max_signature_record_frequency = 200
+min_bibliographic_coupling_weight = 1
+
+[report]
+top_n_authors = 15
+top_n_keywords = 15
+top_n_themes = 15
+top_n_matrix_rows = 20
