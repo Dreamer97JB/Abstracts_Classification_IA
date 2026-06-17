@@ -372,6 +372,23 @@ def _build_report_payload(
             total=int(stats.get("total_articles", 0)),
         ),
         "distribution_snapshots": stats.get("distribution_snapshots", {}),
+        "theme_label_heatmap": _heatmap_rows(
+            bibliometric_artifacts.theme_label_matrix,
+            row_column="theme",
+            column_column="label_name",
+            value_column="article_count",
+            top_rows=config.report.top_n_themes,
+            top_columns=max(config.report.top_n_themes, 6),
+        ),
+        "author_label_heatmap": _heatmap_rows(
+            bibliometric_artifacts.author_label_matrix,
+            row_column="cited_author_display",
+            column_column="label_name",
+            value_column="article_count",
+            top_rows=min(config.report.top_n_authors, 12),
+            top_columns=max(config.report.top_n_themes, 6),
+        ),
+        "label_year_heatmap": _year_label_heatmap_rows(bibliometric_artifacts.enriched_rows),
         "top_corpus_authors": bibliometric_artifacts.corpus_author_frequency.head(
             config.report.top_n_authors
         ).to_dict(orient="records"),
@@ -497,6 +514,69 @@ def _theme_assignment_rows(summary: dict[str, int], *, total: int) -> list[dict[
     return rows
 
 
+def _heatmap_rows(
+    frame: pd.DataFrame,
+    *,
+    row_column: str,
+    column_column: str,
+    value_column: str,
+    top_rows: int,
+    top_columns: int,
+) -> dict[str, object]:
+    if frame.empty or row_column not in frame.columns or column_column not in frame.columns or value_column not in frame.columns:
+        return {"rows": [], "columns": [], "values": []}
+    pivot = (
+        frame.groupby([row_column, column_column], dropna=False)[value_column]
+        .sum()
+        .unstack(fill_value=0)
+    )
+    if pivot.empty:
+        return {"rows": [], "columns": [], "values": []}
+    pivot = pivot.loc[pivot.sum(axis=1).sort_values(ascending=False).head(top_rows).index]
+    column_order = pivot.sum(axis=0).sort_values(ascending=False).head(top_columns).index
+    pivot = pivot.loc[:, column_order]
+    return {
+        "rows": [str(index) for index in pivot.index.tolist()],
+        "columns": [str(column) for column in pivot.columns.tolist()],
+        "values": [[int(value) for value in row] for row in pivot.to_numpy().tolist()],
+    }
+
+
+def _year_label_heatmap_rows(enriched_rows: pd.DataFrame) -> dict[str, object]:
+    if enriched_rows.empty:
+        return {"rows": [], "columns": [], "values": []}
+    candidate_year = None
+    for column in ("year", "publication_year", "Year"):
+        if column in enriched_rows.columns:
+            candidate_year = column
+            break
+    if candidate_year is None:
+        return {"rows": [], "columns": [], "values": []}
+    label_column = "label_name" if "label_name" in enriched_rows.columns else None
+    if label_column is None:
+        return {"rows": [], "columns": [], "values": []}
+    frame = enriched_rows[[candidate_year, label_column]].copy()
+    frame[candidate_year] = pd.to_numeric(frame[candidate_year], errors="coerce")
+    frame[label_column] = frame[label_column].fillna("").map(str).str.strip()
+    frame = frame.loc[frame[candidate_year].notna() & (frame[label_column] != "")]
+    if frame.empty:
+        return {"rows": [], "columns": [], "values": []}
+    frame[candidate_year] = frame[candidate_year].astype(int)
+    pivot = (
+        frame.groupby([candidate_year, label_column], dropna=False)
+        .size()
+        .unstack(fill_value=0)
+        .sort_index()
+    )
+    label_order = pivot.sum(axis=0).sort_values(ascending=False).index
+    pivot = pivot.loc[:, label_order]
+    return {
+        "rows": [str(index) for index in pivot.index.tolist()],
+        "columns": [str(column) for column in pivot.columns.tolist()],
+        "values": [[int(value) for value in row] for row in pivot.to_numpy().tolist()],
+    }
+
+
 def _interactive_html(payload: dict[str, object]) -> str:
     serialized = json.dumps(payload, ensure_ascii=False)
     return f"""<!doctype html>
@@ -549,6 +629,22 @@ def _interactive_html(payload: dict[str, object]) -> str:
     .metric-card dl {{ margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; font-size: 14px; }}
     .metric-card dt {{ color: #52606d; }}
     .metric-card dd {{ margin: 0; font-weight: 600; color: #102a43; }}
+    .heatmap-wrap {{ overflow: auto; border: 1px solid var(--muted); border-radius: 14px; background: white; }}
+    .heatmap {{ display: grid; gap: 1px; background: #e7dfd1; min-width: 520px; }}
+    .heatmap-cell {{
+      padding: 10px 8px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 13px;
+      background: white;
+    }}
+    .heatmap-head {{ position: sticky; top: 0; z-index: 1; font-weight: 700; background: #f4efe5; }}
+    .heatmap-side {{ justify-content: flex-start; font-weight: 600; background: #fbf8f2; }}
+    .heatmap-value {{ font-variant-numeric: tabular-nums; }}
+    .viz-stack {{ display: grid; gap: 18px; }}
     .tag {{ display: inline-block; padding: 4px 8px; border-radius: 999px; background: #e6f4ea; color: #1b4332; font-size: 12px; }}
     .empty {{ padding: 16px; border: 1px dashed #c9c1b2; border-radius: 12px; background: #faf7f0; }}
     .kpi-note {{ margin-top: 10px; color: #52606d; font-size: 14px; }}
@@ -576,6 +672,27 @@ def _interactive_html(payload: dict[str, object]) -> str:
         <h2>Corpus distributions</h2>
         <p class="muted">Compact histograms for publication year, references, authors, keywords, and abstract length.</p>
         <div id="distributionCharts"></div>
+      </div>
+    </section>
+    <section class="grid-2">
+      <div class="panel">
+        <h2>Heatmaps</h2>
+        <p class="muted">Crosses prioritized for research interpretation: theme x label and cited-author x label.</p>
+        <div class="viz-stack">
+          <div>
+            <span class="tag">Theme x label</span>
+            <div id="themeLabelHeatmap"></div>
+          </div>
+          <div>
+            <span class="tag">Cited author x label</span>
+            <div id="authorLabelHeatmap"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Temporal evolution</h2>
+        <p class="muted">How the official labels move across publication years in the classified Scopus corpus.</p>
+        <div id="labelYearHeatmap"></div>
       </div>
     </section>
     <section class="grid-2">
@@ -683,9 +800,17 @@ def _interactive_html(payload: dict[str, object]) -> str:
     const distributionBlock = (title, rows) => {{
       if (!rows?.length) return '';
       const max = Math.max(...rows.map((row) => row.count || 0), 1);
+      const points = rows.slice(0, 18).map((row, index) => {{
+        const x = rows.length === 1 ? 0 : (index / Math.max(rows.slice(0, 18).length - 1, 1)) * 100;
+        const y = 100 - (((row.count || 0) / max) * 100);
+        return `${{x}},${{y}}`;
+      }}).join(' ');
       return `
         <div style="margin-bottom:16px">
           <h3>${{title}}</h3>
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:90px;margin-bottom:10px;background:linear-gradient(180deg,#f8f5ee,#fff);border:1px solid #e5dccd;border-radius:10px">
+            <polyline fill="none" stroke="#d97706" stroke-width="2.5" points="${{points}}"></polyline>
+          </svg>
           <div class="bars">${{rows.slice(0, 18).map((row) => `
             <div class="bar-row">
               <div>${{row.bucket}}</div>
@@ -695,6 +820,32 @@ def _interactive_html(payload: dict[str, object]) -> str:
           `).join('')}}</div>
         </div>
       `;
+    }};
+    const heatmap = (payload, labelPrefix = '') => {{
+      const rows = payload?.rows || [];
+      const columns = payload?.columns || [];
+      const values = payload?.values || [];
+      if (!rows.length || !columns.length || !values.length) {{
+        return '<div class="empty">No heatmap data available for this view.</div>';
+      }}
+      const max = Math.max(...values.flat(), 1);
+      const templateColumns = `minmax(180px, 1.2fr) repeat(${{columns.length}}, minmax(96px, 1fr))`;
+      const cells = [];
+      cells.push('<div class="heatmap-cell heatmap-head"></div>');
+      columns.forEach((column) => cells.push(`<div class="heatmap-cell heatmap-head">${{column}}</div>`));
+      rows.forEach((row, rowIndex) => {{
+        cells.push(`<div class="heatmap-cell heatmap-side">${{row}}</div>`);
+        columns.forEach((_column, columnIndex) => {{
+          const value = values[rowIndex]?.[columnIndex] || 0;
+          const intensity = value / max;
+          const alpha = Math.max(0.08, intensity * 0.9);
+          const bg = `rgba(15, 118, 110, ${{alpha.toFixed(3)}})`;
+          const color = intensity > 0.55 ? '#f8fafc' : '#102a43';
+          const title = `${{labelPrefix}}${{row}} x ${{columns[columnIndex]}}: ${{fmtNumber(value)}}`;
+          cells.push(`<div class="heatmap-cell heatmap-value" title="${{title}}" style="background:${{bg}};color:${{color}}">${{fmtNumber(value)}}</div>`);
+        }});
+      }});
+      return `<div class="heatmap-wrap"><div class="heatmap" style="grid-template-columns:${{templateColumns}}">${{cells.join('')}}</div></div>`;
     }};
 
     const summary = payload.summary;
@@ -751,6 +902,9 @@ def _interactive_html(payload: dict[str, object]) -> str:
       distributionBlock('Keywords per article', payload.distribution_snapshots?.keywords_per_article || []),
       distributionBlock('Abstract words', payload.distribution_snapshots?.abstract_word_count || []),
     ].join('');
+    document.getElementById('themeLabelHeatmap').innerHTML = heatmap(payload.theme_label_heatmap, 'Theme ');
+    document.getElementById('authorLabelHeatmap').innerHTML = heatmap(payload.author_label_heatmap, 'Author ');
+    document.getElementById('labelYearHeatmap').innerHTML = heatmap(payload.label_year_heatmap, 'Year ');
 
     const authorMode = document.getElementById('authorMode');
     const authorSearch = document.getElementById('authorSearch');
