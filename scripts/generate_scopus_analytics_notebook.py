@@ -63,6 +63,7 @@ def build_notebook() -> dict[str, object]:
             import pandas as pd
             import plotly.express as px
             import plotly.graph_objects as go
+            import plotly.io as pio
             from plotly.subplots import make_subplots
 
             try:
@@ -122,6 +123,7 @@ def build_notebook() -> dict[str, object]:
 
             px.defaults.template = "plotly_white"
             px.defaults.color_discrete_sequence = px.colors.qualitative.Safe
+            pio.renderers.default = "notebook_connected"
 
 
             def split_pipe(value: object) -> list[str]:
@@ -217,6 +219,20 @@ def build_notebook() -> dict[str, object]:
                 fig.update_traces(textposition="outside", cliponaxis=False)
                 fig.update_layout(height=max(420, 28 * len(frame) + 140), showlegend=bool(color))
                 return fig
+
+
+            def show_figure(fig: go.Figure, *, include_plotlyjs: str | bool = False) -> None:
+                display(HTML(fig.to_html(full_html=False, include_plotlyjs=include_plotlyjs)))
+
+
+            def display_bullets(items: list[str], *, title: str | None = None) -> None:
+                heading = f"<h3 style='margin:0 0 10px;color:#12343b'>{title}</h3>" if title else ""
+                bullets = "".join(f"<li>{item}</li>" for item in items)
+                display(
+                    HTML(
+                        f"<div style='margin:12px 0 20px;padding:14px 16px;border:1px solid #d9d2c3;border-radius:14px;background:#fffdf9;color:#29434e'>{heading}<ul style='margin:0;padding-left:22px'>{bullets}</ul></div>"
+                    )
+                )
 
 
             def display_note(text: str) -> None:
@@ -349,7 +365,7 @@ def build_notebook() -> dict[str, object]:
             )
             overview_fig.update_traces(textposition="outside", cliponaxis=False)
             overview_fig.update_layout(height=520, showlegend=False, xaxis_title="Articles", yaxis_title="")
-            overview_fig.show()
+            show_figure(overview_fig, include_plotlyjs="cdn")
 
             display_note(
                 f"<strong>Reading this overview:</strong> the dominant official label is <strong>{dominant_label}</strong>. "
@@ -396,7 +412,7 @@ def build_notebook() -> dict[str, object]:
                 f"The median bibliography size is {descriptive_profiles.loc[descriptive_profiles['metric'] == 'References per article', 'median'].iloc[0]:.0f} references, which is usually more informative than the mean when long review-like papers are present.",
                 f"The median abstract length is {descriptive_profiles.loc[descriptive_profiles['metric'] == 'Abstract words', 'median'].iloc[0]:.0f} words, indicating the common reporting style across the corpus.",
             ]
-            display(Markdown("### Interpretation\\n" + "\\n".join(f"- {note}" for note in profile_notes)))
+            display_bullets(profile_notes, title="Interpretation")
             """
         ),
         _code_cell(
@@ -433,7 +449,7 @@ def build_notebook() -> dict[str, object]:
                 xaxis_title="Publication year",
                 yaxis_title="Articles",
             )
-            fig_year.show()
+            show_figure(fig_year)
 
             display_note(
                 "The bars show annual output, while the rolling line smooths short-term noise. "
@@ -452,7 +468,7 @@ def build_notebook() -> dict[str, object]:
                 title="Evolution of the official labels over publication years",
             )
             label_timeline_fig.update_layout(height=520, xaxis_title="Publication year", yaxis_title="Articles")
-            label_timeline_fig.show()
+            show_figure(label_timeline_fig)
 
             year_label_pivot = (
                 yearly_label_counts.pivot_table(
@@ -471,7 +487,7 @@ def build_notebook() -> dict[str, object]:
                 labels={"x": "Publication year", "y": "Official label", "color": "Articles"},
             )
             heatmap_fig.update_layout(height=420)
-            heatmap_fig.show()
+            show_figure(heatmap_fig)
             """
         ),
         _code_cell(
@@ -511,7 +527,7 @@ def build_notebook() -> dict[str, object]:
                     )
                     fig.update_traces(marker_color=color)
                 fig.update_layout(height=420)
-                fig.show()
+                show_figure(fig)
                 display_note(note)
             """
         ),
@@ -531,7 +547,7 @@ def build_notebook() -> dict[str, object]:
                 title="Reference-count profiles by official label (clipped at the 99th percentile)",
             )
             violin_fig.update_layout(height=540, xaxis_title="", yaxis_title="References per article")
-            violin_fig.show()
+            show_figure(violin_fig)
 
             abstract_box_fig = px.box(
                 article_df,
@@ -543,7 +559,7 @@ def build_notebook() -> dict[str, object]:
                 title="Abstract-length profiles by official label",
             )
             abstract_box_fig.update_layout(height=540, xaxis_title="", yaxis_title="Abstract words")
-            abstract_box_fig.show()
+            show_figure(abstract_box_fig)
             """
         ),
         _md_cell(
@@ -574,7 +590,7 @@ def build_notebook() -> dict[str, object]:
                 color_continuous_scale="Tealgrn",
             )
             theme_bar.update_layout(height=560, coloraxis_showscale=False)
-            theme_bar.show()
+            show_figure(theme_bar)
 
             display_note(
                 "These themes come from the hydrated theme layer, which prioritizes explicit themes first, then keyword-derived themes, "
@@ -608,7 +624,7 @@ def build_notebook() -> dict[str, object]:
                 labels={"x": "Official label", "y": "Recovered theme", "color": "Articles"},
             )
             fig_theme_label.update_layout(height=620)
-            fig_theme_label.show()
+            show_figure(fig_theme_label)
             """
         ),
         _code_cell(
@@ -630,7 +646,7 @@ def build_notebook() -> dict[str, object]:
                 color_discrete_sequence=THEME_COLORS,
             )
             fig_theme_timeline.update_layout(height=520, xaxis_title="Publication year", yaxis_title="Articles")
-            fig_theme_timeline.show()
+            show_figure(fig_theme_timeline)
 
             theme_share_by_label = (
                 theme_label_curated.groupby("theme", as_index=False)
@@ -684,7 +700,7 @@ def build_notebook() -> dict[str, object]:
             )
             fig_keyword_coverage.update_traces(textposition="outside", cliponaxis=False)
             fig_keyword_coverage.update_layout(height=360, showlegend=False)
-            fig_keyword_coverage.show()
+            show_figure(fig_keyword_coverage)
 
             top_keywords_by_source = (
                 keyword_counts.groupby("keyword_source", group_keys=False)
@@ -704,7 +720,7 @@ def build_notebook() -> dict[str, object]:
             )
             fig_keywords.update_layout(height=900)
             fig_keywords.for_each_annotation(lambda annotation: annotation.update(text=annotation.text.split("=")[-1]))
-            fig_keywords.show()
+            show_figure(fig_keywords)
             """
         ),
         _md_cell(
@@ -731,7 +747,7 @@ def build_notebook() -> dict[str, object]:
                 color_continuous_scale="Teal",
             )
             corpus_authors_fig.update_layout(height=820, coloraxis_showscale=False)
-            corpus_authors_fig.show()
+            show_figure(corpus_authors_fig)
 
             cited_authors_fig = px.bar(
                 top_cited_authors.sort_values("article_citation_coverage"),
@@ -744,7 +760,7 @@ def build_notebook() -> dict[str, object]:
                 color_continuous_scale="Sunsetdark",
             )
             cited_authors_fig.update_layout(height=820, coloraxis_showscale=False)
-            cited_authors_fig.show()
+            show_figure(cited_authors_fig)
             """
         ),
         _code_cell(
@@ -790,7 +806,7 @@ def build_notebook() -> dict[str, object]:
                 labels={"x": "Official label", "y": "Cited author", "color": "Articles"},
             )
             author_heatmap_fig.update_layout(height=700)
-            author_heatmap_fig.show()
+            show_figure(author_heatmap_fig)
             """
         ),
         _md_cell(
@@ -928,7 +944,7 @@ def build_notebook() -> dict[str, object]:
                 title="Co-author network preview built directly inside the notebook",
             )
             if coauthor_network_fig is not None:
-                coauthor_network_fig.show()
+                show_figure(coauthor_network_fig)
             else:
                 display_note("No co-author notebook preview could be built from the exported network slice.")
 
@@ -941,17 +957,17 @@ def build_notebook() -> dict[str, object]:
                 title="Co-cited author network preview built directly inside the notebook",
             )
             if cocited_network_fig is not None:
-                cocited_network_fig.show()
+                show_figure(cocited_network_fig)
             else:
                 display_note("No co-cited author notebook preview could be built from the exported network slice.")
 
-            display(
-                Markdown(
-                    "Full network exports available at:\\n"
-                    f"- `{(NETWORKS_DIR / 'co_author.html').relative_to(PROJECT_ROOT).as_posix()}`\\n"
-                    f"- `{(NETWORKS_DIR / 'co_citation_authors.html').relative_to(PROJECT_ROOT).as_posix()}`\\n"
-                    f"- `{(NETWORKS_DIR / 'bibliographic_coupling.html').relative_to(PROJECT_ROOT).as_posix()}`"
-                )
+            display_bullets(
+                [
+                    f"<code>{(NETWORKS_DIR / 'co_author.html').relative_to(PROJECT_ROOT).as_posix()}</code>",
+                    f"<code>{(NETWORKS_DIR / 'co_citation_authors.html').relative_to(PROJECT_ROOT).as_posix()}</code>",
+                    f"<code>{(NETWORKS_DIR / 'bibliographic_coupling.html').relative_to(PROJECT_ROOT).as_posix()}</code>",
+                ],
+                title="Full network exports available at",
             )
             """
         ),
@@ -971,7 +987,7 @@ def build_notebook() -> dict[str, object]:
                 "Cited-author displays were already improved in the pipeline and additionally filtered here for presentation, but exhaustive author disambiguation is still a separate curation problem.",
                 "Network visualizations shown in this notebook are curated subgraphs for readability, not the full network universe.",
             ]
-            display(Markdown("\\n".join(f"- {note}" for note in quality_notes)))
+            display_bullets(quality_notes)
             """
         ),
         _md_cell(
@@ -999,7 +1015,7 @@ def build_notebook() -> dict[str, object]:
                 f"The cited-author landscape is anchored by figures such as {top_cited_text}, which helps identify the intellectual scaffolding of the classified literature.",
                 "For presentation purposes, this notebook should be treated as the main analytical interface, while the CSV, GraphML, and HTML exports remain the deep-dive appendix.",
             ]
-            display(Markdown("### Presentation-ready synthesis\\n" + "\\n".join(f"- {point}" for point in conclusion_points)))
+            display_bullets(conclusion_points, title="Presentation-ready synthesis")
             """
         ),
     ]
